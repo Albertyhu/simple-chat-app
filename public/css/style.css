@@ -1,0 +1,153 @@
+:root {
+    --burgerSize: 40px; 
+}
+
+body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+#chatform { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+#input:focus { outline: none; }
+#chatform > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages > li { padding: 0.5rem 1rem; }
+#messages > li:nth-child(odd) { background: #efefef; }
+.hideServerMessage {display:none} 
+
+#login-form{
+    margin: 20px auto;
+    width: 90%; 
+    height: fit-content;
+    padding:10px; 
+    border-radius: 20px; 
+    position: absolute; 
+    top: 10%; 
+    left: 50%; 
+    transform: translateX(-50%);  
+    display: flex; 
+    border: 1px solid #D6D6D6; 
+    flex-direction: column !important; 
+    z-index: 2; 
+    background-color: #F2F2F2;
+} 
+
+#login-form > label {
+    font-size: 25px; 
+    font-weight: bold;
+    text-align: center; 
+    margin: 10px auto; 
+}
+
+#login-form > input {
+    border-radius: 10px; 
+    padding: 5px; 
+    color: #000; 
+    margin: 10px auto; 
+    width: 90%; 
+    background-color: #fff !important;
+    font-size: 20px;
+}
+
+
+#login-form > button {   
+width: fit-content;
+text-align: center;
+margin: 10px auto;
+border-radius: 10px; 
+padding: 5px;
+}
+
+.closeForm {
+    display:none !important;  
+}
+
+.usernameStyle { 
+    font-weight: bold;
+}
+
+.usernameDiv {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+}
+
+#navigation {
+    display: flex; 
+    flex-direction: row-reverse;
+    justify-content: space-between;  
+    background-color: #DEFACE; 
+}
+
+#burger-icon {
+    width: var(--burgerSize);
+    height: var(--burgerSize); 
+    object-fit: cover; 
+    margin: 5px;
+    cursor: pointer;
+}
+
+#burger-icon > img {
+    width: 100%; 
+    height: 100%; 
+}
+
+#MobileMenu { 
+    width: 280px; 
+    height: 100%; 
+    text-align: center; 
+    color: #fff; 
+    z-index: 50; 
+    position: fixed; 
+    right: 0px; 
+    top: 0px; 
+    background-color: #000; 
+    padding: 20px 0px;
+    transition: transform 500ms linear; 
+
+}
+
+#MobileMenu > div{
+    user-select: none; 
+    overflow-y: auto; 
+    font-size: 16px; 
+    margin: 10px auto;
+}
+
+.closed-menu {
+    transform: translateX(300px);
+}
+
+#MenuHeader{
+    margin-bottom: 20px; 
+    text-align: center; 
+    border-bottom: 1px solid #fff;
+    width: 90%; 
+}
+
+.menu-link{
+    cursor: pointer; 
+}
+
+.menu-link:hover{
+    font-weight: bold; 
+}
+
+#online-list {
+    list-style: none;
+}
+
+@media screen and (min-width: 636px){
+    #login-form{
+        margin: 20px auto;
+        width: 80%; 
+        top: 50%; 
+        transform: translateX(-50%) translateY(-50%);  
+    }
+    #login-form > label {
+        font-size: 20px; 
+    }
+    #login-form > input {
+
+    }
+}
+

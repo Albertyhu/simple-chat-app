@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat app</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/list-animation.css" type="text/css">
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <%- include('./partials/login-form.ejs') %>
+    <%- include("./partials/nav.ejs") %>
+    <%- include("./partials/menu.ejs") %>
+    <ul id="messages"></ul>
+    <div
+      id = "server_message"
+      class = "hideServerMessage"
+    >User is typing...</div>
+    <form id="chatform" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type = "text/javascript" src="/scripts/chat-script.js"></script>
+    <script type="text/javascript" src = "/scripts/menu.js"></script>
+    <script type = "text/javascript" src = "/scripts/user-script.js"></script>
+    <script type = "text/javascript" src = "/scripts/login-form.js"></script>
+  </body>
+</html>
