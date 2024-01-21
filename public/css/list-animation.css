@@ -1,12 +1,14 @@
 :root{
-    --dot-size: 20px; 
+    --dot-size: 50px; 
 }
 
 .listItemStyle {
-    display: flex;
-    flex-direction: row; 
     width: 100%;
-    flex-wrap: nowrap;
+    overflow:hidden;
+}
+
+.listItemStyle::marker{
+    color: #00ff00;
 }
 
 .ring-container {
@@ -28,8 +30,7 @@
     transform: translateX(-50%) translateY(-50%);  
 }
 
-.circle::before {
-    content: "";
+.ringring {
     border: 3px solid #62bd19;
     -webkit-border-radius: 30px;
     height: 25px;
@@ -37,9 +38,9 @@
     position: absolute;
     /* left: 15px;
     top: 15px; */
-    top:50%; 
-    left: 50%; 
-    transform: translateX(-50%) translateY(-50%);  
+    top:25%; 
+    left: 25%; 
+    transform: translateX(-25%) translateY(-25%);  
     -webkit-animation: pulsate 1s ease-out;
     -webkit-animation-iteration-count: infinite; 
     opacity: 0.0

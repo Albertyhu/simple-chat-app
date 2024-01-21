@@ -14,6 +14,6 @@ LoginForm.addEventListener("submit", e =>{
         }
         socket.emit("chat message", chatItem)
         socket.emit("new user", UsernameInput.value);
-        UserOnline(UsernameInput.value)
+        AddUserElem(UsernameInput.value)
     }
 })

@@ -10,4 +10,29 @@ const convertUserMapToArray = (userMap) =>{
         return userArray
 }
 
-module.exports = {convertUserMapToArray} 
+const removeFromMap = (id, MAP) =>{
+    var cloneMap = new Map(MAP)
+    let target = ""; 
+    cloneMap.forEach((value, key) => {
+        if(id === value){
+            target = key; 
+        }
+    }) 
+    cloneMap.delete(target)
+    return cloneMap
+}
+
+const getNameById = (ID, MAP) =>{
+    let username = ""; 
+    MAP.forEach((value, key)=>{
+        if(value === ID) 
+           username = key; 
+    })
+    return username; 
+}
+
+module.exports = {
+    convertUserMapToArray,
+    removeFromMap,
+    getNameById, 
+} 

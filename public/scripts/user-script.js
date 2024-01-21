@@ -1,20 +1,13 @@
-var socket = io();
-var chatform = document.getElementById('chatform'); 
-var username = localStorage.getItem("username")
-var LoginFrom = document.getElementById("login-form")
-var MobileMenu = document.getElementById("MobileMenu")
-var LogoutLink = document.getElementById("logout-link")
-var MenuHeader = document.getElementById('MenuHeader')
-const UserList = document.getElementById("online-list"); 
 
-const UserOnline = (userN) =>{
+
+const AddUserElem = (userN) =>{
     MenuHeader.style.display="block"; 
     MenuHeader.innerHTML = `<p>You are logged in as</p><p><b>${userN}</b></p>`
     LogoutLink.style.display="block"; 
     chatform.style.display = "flex"; 
 }
 
-const UserOffline = () =>{
+const RemoveUserElem = () =>{
     LogoutLink.style.display="none"; 
     MenuHeader.innerHTML = ""; 
     MenuHeader.style.display = "none"
@@ -31,68 +24,70 @@ const Logout = () =>{
     socket.emit("chat message", chatItem); 
     localStorage.removeItem("username");
 
-    UserOffline();
+    RemoveUserElem();
     const LoginForm = document.getElementById("login-form");
     LoginForm.classList.remove("closeForm")
 
     socket.emit("remove user", UsernameInput.value);
 }
 
-if(!username){
+if(!localUsername){
     const LoginForm = document.getElementById("login-form");
     LoginForm.classList.remove("closeForm")
-    UserOffline(); 
+    RemoveUserElem(); 
 }
 else{
     var chatItem = {
         username: "", 
         msg: `${username} is connected`, 
-
     }
     socket.emit("chat message", chatItem)
-    socket.emit("add to user map", username)
-    UserOnline(username);
+    socket.emit("new user", username)
+    AddUserElem(username);
 }
 
 const AddUserToList = (userN, ID)=>{
-    const userLi = document.createElement("li")
-    userLi.classList.add("listItemStyle")
-    userLi.setAttribute("id", `id-${ID}`)
-
-    const RingContainer = document.createElement("div")
-    RingContainer.classList.add("ring-container")
-
-    const RingRing = document.createElement("div")
-    RingRing.classList.add("ringring")
-    const Circle = document.createElement("div")
-    Circle.classList.add("circle")
-    RingContainer.append(RingRing)
-    RingContainer.append(Circle)
-    userLi.append(RingContainer)
-
-    const nameDiv = document.createElement("div")
-    nameDiv.innerText = userN; 
-    userLi.append(nameDiv)
-    UserList.append(userLi)
+    const userLi = document.createElement("li"); 
+    userLi.classList.add("listItemStyle"); 
+    userLi.setAttribute("id", `id-${ID}`); 
+    userLi.innerText = userN; 
+    UserList.append(userLi); 
 }
 
 const RemoveUserFromList = (ID) =>{
+    console.log("removing user: ", ID)
     const target = document.getElementById(`id-${ID}`)
     if(target)
         UserList.removeChild(target)
 }
 
-socket.on("update user list", userList =>{
-    console.log("userlist: ", userList)
-    userList.forEach(user =>{
-        AddUserToList(user.username, user.id)
-    })
-})
+//Create elment for notifying user when a user is typing
+const addUserTypingNote = (userN, ID) =>{
+    var UserTypingNote=document.createElement("p"); 
+    UserTypingNote.classList.add("hideServerMessage"); 
+    UserTypingNote.innerText = `${userN} is typing...`; 
+    UserTypingNote.setAttribute("id", `typing-${ID}`)
+    serverMessage.appendChild(UserTypingNote); 
+}
 
-socket.on("add to list", (userInfo) =>{
-    AddUserToList(userInfo.username, userInfo.ID); 
+//Remove element that is responsible for notifying when the user is typing 
+const removeUserTypingNote = (ID) =>{
+    var removeNode = document.getElementById(`typing-${ID}`); 
+    serverMessage.removeChild(removeNode); 
+}
+
+socket.on("update user list", userList =>{
+    OnlineUsers = userList; 
+    console.log("OnlineUsers: ", OnlineUsers)
+    UserList.innerHTML = ""; 
+    serverMessage.innerHTML = ""; 
+    userList.forEach(user =>{
+        AddUserToList(user.username, user.id); 
+        addUserTypingNote(user.username, user.id); 
+    })
 })
 
 socket.on("remove from list", (userId) =>{
     RemoveUserFromList(userId)
+    removeUserTypingNote(userId) 
 })

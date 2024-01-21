@@ -1,7 +1,11 @@
 const express = require("express"); 
 const app = express(); 
 const path = require('path');
-const {convertUserMapToArray} = require("./hooks/array.js")
+const {
+    convertUserMapToArray,
+    removeFromMap, 
+    getNameById, 
+} = require("./hooks/array.js")
 const http = require("http");
 //Imports the built in Node JS http module 
 
@@ -21,25 +25,42 @@ var onlineUsers = new Map();
 
 io.on("connection", (socket) =>{
     var userMap = convertUserMapToArray(onlineUsers)
-    socket.on("add to user map", newUser =>{
-        onlineUsers.set(newUser, socket.id)
-    })
+    console.log("online users: ", onlineUsers)
     io.emit("update user list", userMap)
     socket.on("chat message", (message)=>{
         io.emit("chat message", message)
     })
     socket.on("new user", (newUser) =>{
-        onlineUsers.set(newUser, socket.id)
-        io.emit("add to list", {username: newUser, ID: onlineUsers.get(newUser) })
+        var socketID= socket.id
+        console.log("socketID: ", socketID)
+        onlineUsers.set(newUser, socketID)
+    
+        var newUserMap = convertUserMapToArray(onlineUsers)
+        io.emit("update user list", newUserMap)
     })
+
     socket.on("remove user", (userRemoved) =>{
         var userID =  onlineUsers.get(userRemoved)
         onlineUsers.delete(userRemoved); 
+        console.log("onlineUsers: ", onlineUsers)
         io.emit("remove from list", userID)
     })
+
     socket.on("disconnect", ()=>{
-        console.log("User is disconnected.")
-        io.emit("chat message", "User is disconnected")
+        var userN = getNameById(socket.id, onlineUsers)
+        onlineUsers = new Map(removeFromMap(socket.id, onlineUsers))
+        var chatItem = {username: "", msg: `${userN} is disconnected`}
+        io.emit("chat message", chatItem)
+        var newUserMap = convertUserMapToArray(onlineUsers)
+        io.emit("update user list", newUserMap)
+    })
+
+    //when a user is typing 
+    socket.on("user is typing", (userN)=>{
+        io.emit("user is typing", onlineUsers.get(userN))
+    })
+    socket.on("no longer typing", (userN)=>{
+        io.emit("no longer typing", onlineUsers.get(userN))
     })
 })
 

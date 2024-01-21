@@ -4,7 +4,8 @@ var input = document.getElementById("input");
 var messages = document.getElementById('messages');
 var serverMessage = document.getElementById('server_message'); 
 
-var username = localStorage.getItem("username")
+var localUsername =  localStorage.getItem("username"); 
+var username =  localUsername != null || localUsername != "" ? localUsername : input.value; 
 
 const submitEvent = (e) =>{
     e.preventDefault()
@@ -18,14 +19,7 @@ const submitEvent = (e) =>{
     }
 }
 chatform.addEventListener("submit", submitEvent)
-input.addEventListener("keydown", e =>{
-    serverMessage.classList.remove("hideServerMessage")
-})
 
-input.addEventListener("keyup", e =>{
-    if(!serverMessage.classList.contains("hideServerMessage")) 
-    serverMessage.classList.add("hideServerMessage")
-})
 document.addEventListener("keypress", e =>{
     if(e.code == 13){
         submitEvent(e); 
@@ -56,3 +50,4 @@ socket.on("chat message", chatItem =>{
     messages.appendChild(item); 
     window.scrollTo(0, document.body.scrollHeight);
 })
+
