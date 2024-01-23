@@ -1,52 +1,60 @@
-:root{
-    --dot-size: 50px; 
+:root {
+  --dot-size: 50px;
 }
 
 .listItemStyle {
-    width: 100%;
-    overflow:hidden;
+  width: 100%;
+  overflow: hidden;
 }
 
-.listItemStyle::marker{
-    color: #00ff00;
+.listItemStyle::marker {
+  color: #00ff00;
 }
 
 .ring-container {
-    position: relative;
-    width: var(--dot-size);
-    height: var(--dot-size);
+  position: relative;
+  width: var(--dot-size);
+  height: var(--dot-size);
 }
 
 .circle {
-    width: 15px;
-    height: 15px;
-    background-color: #62bd19;
-    border-radius: 50%;
-    position: absolute;
-    /* top: 23px;
+  width: 15px;
+  height: 15px;
+  background-color: #62bd19;
+  border-radius: 50%;
+  position: absolute;
+  /* top: 23px;
     left: 23px; */
-    top:50%; 
-    left: 50%; 
-    transform: translateX(-50%) translateY(-50%);  
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .ringring {
-    border: 3px solid #62bd19;
-    -webkit-border-radius: 30px;
-    height: 25px;
-    width: 25px;
-    position: absolute;
-    /* left: 15px;
+  border: 3px solid #62bd19;
+  -webkit-border-radius: 30px;
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  /* left: 15px;
     top: 15px; */
-    top:25%; 
-    left: 25%; 
-    transform: translateX(-25%) translateY(-25%);  
-    -webkit-animation: pulsate 1s ease-out;
-    -webkit-animation-iteration-count: infinite; 
-    opacity: 0.0
+  top: 25%;
+  left: 25%;
+  transform: translateX(-25%) translateY(-25%);
+  -webkit-animation: pulsate 1s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0;
 }
 @-webkit-keyframes pulsate {
-    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
-    50% {opacity: 1.0;}
-    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+  0% {
+    -webkit-transform: scale(0.1, 0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1.2, 1.2);
+    opacity: 0;
+  }
 }

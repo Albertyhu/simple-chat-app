@@ -1,165 +1,261 @@
 :root {
-    --burgerSize: 40px; 
+  --burgerSize: 40px;
+  --primaryC: #deface;
+  --secondaryC: #f4face;
 }
 
-body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-#chatform { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-#input:focus { outline: none; }
-#chatform > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-
-#messages { 
-    list-style-type: none; 
-    padding: 60px 0px 0px 0px; 
-    margin:0px; 
+body {
+  margin: 0;
+  padding-bottom: 3rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 }
-#messages > li { padding: 0.5rem 1rem; }
-#messages > li:nth-child(odd) { background: #efefef; }
-.hideServerMessage {display:none} 
 
-#login-form{
-    margin: 20px auto;
-    width: 90%; 
-    height: fit-content;
-    padding:10px; 
-    border-radius: 20px; 
-    position: absolute; 
-    top: 10%; 
-    left: 50%; 
-    transform: translateX(-50%);  
-    display: flex; 
-    border: 1px solid #D6D6D6; 
-    flex-direction: column !important; 
-    z-index: 2; 
-    background-color: #F2F2F2;
-} 
+#bottom_area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+}
+#chatform {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  position: static;
+  display: flex;
+  height: 3rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+#input {
+  border: none;
+  padding: 0 1rem;
+  flex-grow: 1;
+  border-radius: 2rem;
+  margin: 0.25rem;
+}
+#input:focus {
+  outline: none;
+}
+#chatform > button {
+  background: #333;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+}
+
+#messages {
+  list-style-type: none;
+  padding: 60px 0px 0px 0px;
+  margin: 0px;
+}
+#messages > li {
+  padding: 0.5rem 1rem;
+}
+#messages > li:nth-child(odd) {
+  background: #efefef;
+}
+.hideServerMessage {
+  display: none;
+}
+
+#login-form {
+  margin: 20px auto;
+  width: 90%;
+  height: fit-content;
+  padding: 10px;
+  border-radius: 20px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  border: 1px solid #d6d6d6;
+  flex-direction: column !important;
+  z-index: 2;
+  background-color: #f2f2f2;
+}
 
 #login-form > label {
-    font-size: 25px; 
-    font-weight: bold;
-    text-align: center; 
-    margin: 10px auto; 
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px auto;
 }
 
 #login-form > input {
-    border-radius: 10px; 
-    padding: 5px; 
-    color: #000; 
-    margin: 10px auto; 
-    width: 90%; 
-    background-color: #fff !important;
-    font-size: 20px;
+  border-radius: 10px;
+  padding: 5px;
+  color: #000;
+  margin: 10px auto;
+  width: 90%;
+  background-color: #fff !important;
+  font-size: 20px;
 }
 
+#login-form > button {
+  width: fit-content;
+  text-align: center;
+  margin: 10px auto;
+  border-radius: 10px;
+  padding: 5px;
+}
 
-#login-form > button {   
-width: fit-content;
-text-align: center;
-margin: 10px auto;
-border-radius: 10px; 
-padding: 5px;
+#login-error {
+  color: #e90808;
+  font-weight: bold;
+}
+
+.hideLoginError {
+  display: none;
 }
 
 .closeForm {
-    display:none !important;  
+  display: none !important;
 }
 
-.usernameStyle { 
-    font-weight: bold;
+.usernameStyle {
+  font-weight: bold;
 }
 
 .usernameDiv {
-    display: flex; 
-    flex-direction: row; 
-    justify-content: space-between; 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #navigation {
-    display: flex; 
-    flex-direction: row-reverse;
-    justify-content: space-between;  
-    background-color: #DEFACE; 
-    position: fixed;
-    width: 100%; 
-    height: fit-content;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  background-color: var(--primaryC);
+  position: fixed;
+  width: 100%;
+  height: fit-content;
 }
 
 #burger-icon {
-    width: var(--burgerSize);
-    height: var(--burgerSize); 
-    object-fit: cover; 
-    margin: 5px;
-    cursor: pointer;
+  width: var(--burgerSize);
+  height: var(--burgerSize);
+  object-fit: cover;
+  margin: 5px;
+  cursor: pointer;
 }
 
 #burger-icon > img {
-    width: 100%; 
-    height: 100%; 
+  width: 100%;
+  height: 100%;
 }
 
-#MobileMenu { 
-    width: 280px; 
-    height: 100%; 
-    text-align: center; 
-    color: #fff; 
-    z-index: 50; 
-    position: fixed; 
-    right: 0px; 
-    top: 0px; 
-    background-color: #000; 
-    padding: 20px 0px;
-    transition: transform 500ms linear; 
-
+#MobileMenu {
+  width: 280px;
+  height: 100%;
+  text-align: center;
+  color: #fff;
+  z-index: 50;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  background-color: #000;
+  padding: 20px 0px;
+  transition: transform 500ms linear;
 }
 
-#MobileMenu > div{
-    user-select: none; 
-    overflow-y: auto; 
-    font-size: 16px; 
-    margin: 10px auto;
+#MobileMenu > div {
+  user-select: none;
+  overflow-y: auto;
+  font-size: 16px;
+  margin: 10px auto;
 }
 
 .closed-menu {
-    transform: translateX(300px);
+  transform: translateX(300px);
 }
 
-#MenuHeader{
-    margin-bottom: 20px; 
-    text-align: center; 
-    border-bottom: 1px solid #fff;
-    width: 90%; 
+#MenuHeader {
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 1px solid #fff;
+  width: 90%;
 }
 
-.menu-link{
-    cursor: pointer; 
+.menu-link {
+  cursor: pointer;
 }
 
-.menu-link:hover{
-    font-weight: bold; 
+.menu-link:hover {
+  font-weight: bold;
+}
+
+#online-list-wrapper {
+  margin-top: 20px !important;
 }
 
 #online-list {
-    padding-left: 0px;
-    list-style-type: disc;
+  padding-left: 0px;
+  list-style-type: disc;
 }
 
 #online-list.li::marker {
-    color: #00ff00; 
+  color: #00ff00;
 }
 
-@media screen and (min-width: 636px){
-    #login-form{
-        margin: 20px auto;
-        width: 80%; 
-        top: 50%; 
-        transform: translateX(-50%) translateY(-50%);  
-    }
-    #login-form > label {
-        font-size: 20px; 
-    }
-    #login-form > input {
-
-    }
+.inviteBox {
+  display: grid;
 }
 
+.hideInviteBox {
+  display: none !important;
+}
+
+.btnDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.btn-primary {
+  border-radius: 10px;
+  padding: 5px;
+  background-color: var(--primaryC);
+  color: #000000;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  border-radius: 10px;
+  padding: 5px;
+  background-color: var(--secondaryC);
+  color: #000000;
+  cursor: pointer;
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translate(2px, 2px);
+}
+
+@media screen and (min-width: 636px) {
+  #login-form {
+    margin: 20px auto;
+    width: 80%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+  #login-form > label {
+    font-size: 20px;
+  }
+  #login-form > input {
+  }
+}

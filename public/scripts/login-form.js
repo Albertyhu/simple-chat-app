@@ -1,19 +1,40 @@
 const LoginForm = document.getElementById("login-form");
-const UsernameInput = document.getElementById("username-input"); 
-var MenuHeader = document.getElementById('MenuHeader')
+const UsernameInput = document.getElementById("username-input");
+var MenuHeader = document.getElementById("MenuHeader");
 
-LoginForm.addEventListener("submit", e =>{
-    e.preventDefault(); 
-    if(UsernameInput.value){
-        localStorage.setItem("username", UsernameInput.value)
-        if(!LoginForm.classList.contains("closeForm"))
-            LoginForm.classList.add("closeForm")
+UsernameInput.addEventListener("change", (e) => {
+  if (!LoginErrorMessage.classList.contains("hideLoginError")) {
+    LoginErrorMessage.classList.add("hideLoginError");
+  }
+});
+
+LoginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const Username = UsernameInput.value.trim();
+  if (Username) {
+    username = Username;
+
+    var TempKey = genKey(20);
+    const checkUsername = {
+      username: Username,
+      TempKey,
+    };
+    socket.emit("new user", checkUsername);
+    socket.on(`checkusername-${TempKey}`, (result) => {
+      if (result.validity) {
+        localStorage.setItem("username", Username);
+        if (!LoginForm.classList.contains("closeForm"))
+          LoginForm.classList.add("closeForm");
         var chatItem = {
-            username: "", 
-            msg: `${UsernameInput.value} is now connected`
-        }
-        socket.emit("chat message", chatItem)
-        socket.emit("new user", UsernameInput.value);
-        AddUserElem(UsernameInput.value)
-    }
-})
+          username: "",
+          msg: `${Username} is now connected`,
+        };
+
+        socket.emit("chat message", chatItem);
+        AddUserElem(Username);
+      } else {
+        LoginErrorMessage.classList.remove("hideLoginError");
+      }
+    });
+  }
+});

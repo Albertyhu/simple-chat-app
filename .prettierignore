@@ -1,0 +1,16 @@
+# Ignore artifacts:
+
+# Ignore all files in the node_modules directory
+node_modules/
+
+# Ignore all files with a .gitignore extension
+.gitignore
+
+# Ignore specific files or patterns
+*.log
+dist/
+build/
+
+package-lock.json
+package.json
+tsconfig.json

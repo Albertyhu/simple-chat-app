@@ -1,0 +1,57 @@
+#bottom_tabs {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+#notifications {
+  min-width: 120px;
+  width: 300px;
+  margin: 0px auto;
+}
+
+#notification-header {
+  border-radius: 20px 20px 0px 0px;
+  background: rgba(0, 0, 0, 0.15);
+  height: 50px;
+  width: 100%;
+  color: #000;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#notification-body {
+  height: 500px;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  transition: height 500ms;
+}
+
+.notification-body-closed {
+  height: 0px !important;
+}
+
+.notification-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px 0px;
+  background-color: #fff;
+  border: none;
+}
+.notification-message > div {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+@media screen and (min-width: 636px) {
+  #notifications {
+    margin: 0px 10px;
+  }
+}

@@ -1,11 +1,11 @@
-const express = require('express'); 
+const express = require("express");
 
-var router = express.Router(); 
+var router = express.Router();
 
-router.get("/", (req, res) =>{
-    res.render('index', {
-        title: "Chat application",
-    })
-})
+router.get("/", (req, res) => {
+  res.render("index", {
+    title: "Chat application",
+  });
+});
 
-module.exports = router; 
+module.exports = router;
