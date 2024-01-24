@@ -83,24 +83,31 @@ io.on("connection", (socket) => {
         inviter,
         //socket.id of invitee 
         invitee,
-        room,
         roomKey, 
     } = invite; 
     //perhaps you need to check if invitee is still online
     //The variable 'invitee' is the socket id that is unique to the user.
-    console.log("invitee: ", invitee)
     socket.to(invitee).emit(`invited-to-chat`, invite);
-    socket.join(room)
-    console.log(`User joined room: ${roomKey}`);
-    socket.to(room).emit(`In private room ${roomKey}`)
+    socket.join(`room-${roomKey}`)
+    //The following code can't be executed becuase the chat room might not be rendered yet. 
+    // socket.to(`room-${roomKey}`).emit(`private-message`, {
+    //   username: "", 
+    //   msg: "You are now in a private chat room.", 
+    //   roomKey, 
+    // })
   });
+  socket.on("accept-private-chat-invite", (room)=>{
+    socket.join(room)
+  })
   socket.on("private-message", (event)=>{
     const {
       username, 
       msg, 
       roomKey, 
     } = event;
-    io.to(`room-${roomKey}`).emit("private-message", event)
+    console.log("roomKey: ", roomKey)
+    const room = `room-${roomKey}`
+    io.to(room).emit("private-message", event)
   })
 });
 

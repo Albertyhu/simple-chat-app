@@ -70,7 +70,6 @@ const openInviteBox = (invitee, ID, parentElem) => {
       inviter_name: username, 
       inviter: userSocketId,
       invitee: ID,
-      room: `room-${roomKey}`, 
       roomKey, 
     }
     socket.emit(`chat-invite`, inviteObj);

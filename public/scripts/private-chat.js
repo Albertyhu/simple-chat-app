@@ -34,7 +34,8 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-socket.on("prviate-message", (chatItem) => {
+socket.on("private-message", (chatItem) => {
+  console.log("chatItem: ", chatItem)
   var item = document.createElement("li");
   if (chatItem.username) {
     var divElement = document.createElement("div");

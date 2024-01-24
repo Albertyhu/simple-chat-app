@@ -24,6 +24,10 @@ NotificationTab?.addEventListener("mousedown", (e) => {
 
 const AcceptPrivateChatInvite = (roomKey) =>{
   ResetNotificationCount(); 
+  if (!NotificationBody?.classList.contains("notification-body-closed")) {
+      NotificationBody?.classList.add("notification-body-closed");
+    }
+  socket.emit("accept-private-chat-invite", `room-${roomKey}`)
   window.open(`/private-chat/${roomKey}`, "_blank"); 
 }
 
@@ -40,7 +44,10 @@ const CreatePrivateNotification = (inviter, roomKey) => {
   var AcceptBtn = document.createElement("button");
   AcceptBtn.classList.add("btn-primary");
   AcceptBtn.innerHTML = "Accept";
-  AcceptBtn.addEventListener("click", AcceptPrivateChatInvite)
+  AcceptBtn.addEventListener("click", ()=>{
+    AcceptPrivateChatInvite(roomKey);
+    NotificationBody?.removeChild(MessageDiv); 
+  })
 
 
   var IgnoreBtn = document.createElement("button");
