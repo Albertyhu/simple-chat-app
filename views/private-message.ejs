@@ -4,7 +4,6 @@
     <title>Private Message Room</title>
     <link rel="stylesheet" href="/css/style.css" type="text/css">
     <link rel="stylesheet" href="/css/list-animation.css" type="text/css">
-    <link rel="stylesheet" href="/css/list-animation.css" type="text/css">
     <link rel="stylesheet" href="/css/notification-style.css" type="text/css"> 
     <style>
     </style>
@@ -68,7 +67,6 @@
             <div
                 id="bottom_tabs"
             >
-                <%- include("./partials/notification-tab.ejs") %>
             </div>
             <form id="chatform" action="">
                 <input id="input" autocomplete="off" /><button>Send</button>
@@ -80,10 +78,9 @@
     <script type = "text/javascript" src = "/scripts/components.js"></script>
     <script type = "text/javascript" src = "/scripts/functions.js"></script>
     <script type = "text/javascript" src = "/scripts/menu.js"></script>
-    <script type = "text/javascript" src = "/scripts/user-script.js"></script>
-    <script type = "text/javascript" src = "/scripts/typing-activity.js"></script>
+    <script type = "text/javascript" src = "/scripts/private-chat/load-user-elements.js"></script>
     <script type = "text/javascript" src = "/scripts/login-form.js"></script>
-    <script type = "text/javascript" src = "/scripts/notification-script.js"></script>
-    <script type = "text/javascript" src = "/scripts/private-chat.js"></script>
+    <script type = "text/javascript" src = "/scripts/private-chat/main.js"></script>
+    <script type = "text/javascript" src = "/scripts/private-chat/typing-activity.js"></script>
   </body>
 </html>

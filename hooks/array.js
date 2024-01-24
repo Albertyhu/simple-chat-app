@@ -30,6 +30,20 @@ const getNameById = (id, MAP) => {
   return username;
 };
 
+//takes a Set of Socket Ids, finds the corresponding username and returns them into an array 
+const createArrayOfUsers = (setObj, mapObj) =>{
+  const userArray = []; 
+  setObj?.forEach(ID =>{
+    const userN = getNameById(ID, mapObj)
+    const user = {
+      username: userN, 
+      id: ID, 
+    }
+    userArray.push(user)
+  })
+  return userArray 
+}
+
 const isUsernameUnique = (username, MapSet) => {
   if (MapSet.has(username)) return false;
   return true;
@@ -39,5 +53,6 @@ module.exports = {
   convertUserMapToArray,
   removeFromMap,
   getNameById,
+  createArrayOfUsers, 
   isUsernameUnique,
 };

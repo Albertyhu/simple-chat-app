@@ -1,5 +1,8 @@
-//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
+const Room = `room-${roomKey}`
 
+socket.emit("joined-private-chat", {roomKey, username})
+
+//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
 ToggleExistingRoomBtn.addEventListener("click", ()=>{
     if(!MobileExistingRoomList.classList.contains("existing-rooms-list-closed")){
         ToggleExistingRoomBtn.classList.remove("RototateExistingRoomBtn"); 
@@ -11,12 +14,12 @@ ToggleExistingRoomBtn.addEventListener("click", ()=>{
     }
 }) 
 
-
 //chat input functions
 const submitEvent = (e) => {
   e.preventDefault();
   const chatItem = {
     username: username,
+    authorSocketId: userSocketId, 
     msg: input.value,
     roomKey: roomKey, 
   };
@@ -34,7 +37,7 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-socket.on("private-message", (chatItem) => {
+socket.on(Room, (chatItem) => {
   console.log("chatItem: ", chatItem)
   var item = document.createElement("li");
   if (chatItem.username) {

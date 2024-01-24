@@ -27,7 +27,7 @@ const AcceptPrivateChatInvite = (roomKey) =>{
   if (!NotificationBody?.classList.contains("notification-body-closed")) {
       NotificationBody?.classList.add("notification-body-closed");
     }
-  socket.emit("accept-private-chat-invite", `room-${roomKey}`)
+  socket.emit("accept-private-chat-invite", roomKey)
   window.open(`/private-chat/${roomKey}`, "_blank"); 
 }
 
@@ -79,7 +79,6 @@ socket.on(`invited-to-chat`, (invite) => {
       inviter,
       //socket.id of invitee 
       invitee,
-      room,
       roomKey, 
   } = invite;   
   CreatePrivateNotification(inviter_name, roomKey);

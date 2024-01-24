@@ -5,6 +5,7 @@ const {
   convertUserMapToArray,
   removeFromMap,
   getNameById,
+  createArrayOfUsers,
   isUsernameUnique,
 } = require("./hooks/array.js");    
 const {
@@ -18,8 +19,12 @@ const server = http.createServer(app);
 //It takes a callback function app that will be invoked everytime an HTTP request is received
 //App is expected to be a callback function
 
-const { Server } = require("socket.io");
-const io = new Server(server);
+const { Server } = require("socket.io")
+const io = new Server(server, {
+  cors: {
+    origin: "https://localhost:3000"
+  }
+});
 
 var indexRouter = require("./routes/index");
 
@@ -85,29 +90,57 @@ io.on("connection", (socket) => {
         invitee,
         roomKey, 
     } = invite; 
-    //perhaps you need to check if invitee is still online
+    socket.join(`room-${roomKey}`)
     //The variable 'invitee' is the socket id that is unique to the user.
     socket.to(invitee).emit(`invited-to-chat`, invite);
-    socket.join(`room-${roomKey}`)
-    //The following code can't be executed becuase the chat room might not be rendered yet. 
-    // socket.to(`room-${roomKey}`).emit(`private-message`, {
-    //   username: "", 
-    //   msg: "You are now in a private chat room.", 
-    //   roomKey, 
-    // })
   });
-  socket.on("accept-private-chat-invite", (room)=>{
-    socket.join(room)
+  socket.on("accept-private-chat-invite", (roomKey)=>{
+    socket.join(`room-${roomKey}`)
+  })
+  //notifies the server when a user joins a private chat room
+  socket.on("joined-private-chat", (event)=>{
+    const { roomKey, username} = event; 
+    const chatItem = {
+      username, 
+      msg: `${username} has joined the private chat room.`, 
+      roomKey, 
+      authorSocketId: null,      
+    }
+    //broadcast message to the chat room 
+    socket.emit(`room-${roomKey}`, chatItem)
+    //updates the number of users in the chat room; 
+
+    //This is not working
+    const Ids = io.sockets.adapter.rooms.get(`room-${roomKey}`)
+    console.log("Ids set: ", Ids)
+    const UsersInChat = createArrayOfUsers(Ids, onlineUsers)
+    socket.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })
   socket.on("private-message", (event)=>{
     const {
       username, 
       msg, 
       roomKey, 
+      authorSocketId, 
     } = event;
     console.log("roomKey: ", roomKey)
     const room = `room-${roomKey}`
-    io.to(room).emit("private-message", event)
+    io.emit(`room-${roomKey}`, event)
+  })
+  //when a user is typing in specific private chat room 
+  socket.on(`typing private chat`, (event)=>{
+    const {
+        roomKey,
+        username
+    } = event; 
+    io.emit(`user is typing-${roomKey}`, onlineUsers.get(username))
+  })
+  socket.on(`no longer typing in private chat`, (event)=>{
+    const {
+      roomKey,
+      username, 
+    } = event; 
+    io.emit(`no longer typing-${roomKey}`, onlineUsers.get(username))
   })
 });
 
