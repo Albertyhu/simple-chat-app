@@ -2,11 +2,18 @@
     id = "navigation"
 >
     <div
-        id = "burger-icon"
-        onClick = {openMenu()}
+        id = "navigation-content"
     >
-        <img 
-            src = "/assets/icons/Hamburger_icon.png"
-        />
+        <% if(title){ %>
+            <label><%= title %></label>
+        <% } %>
+        <div
+            id = "burger-icon"
+            onClick = {openMenu()}
+        >
+            <img 
+                src = "/assets/icons/Hamburger_icon.png"
+            />
+        </div>
     </div>
 </nav>

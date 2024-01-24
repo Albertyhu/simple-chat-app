@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Private Message Room</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/list-animation.css" type="text/css">
+    <link rel="stylesheet" href="/css/list-animation.css" type="text/css">
+    <link rel="stylesheet" href="/css/notification-style.css" type="text/css"> 
+    <style>
+    </style>
+  </head>
+  <body>
+    <%- include('./partials/login-form.ejs') %>
+    <%- include("./partials/nav.ejs", {title:"Private Chat"}) %> 
+    <%- include("./partials/menu.ejs") %>
+    <script>
+        var roomKey = `<%= roomKey %>`
+    </script>
+    <div
+        id = "private-chat-container"
+    >
+        <div
+            id = "existing-rooms"
+        >  
+            <div 
+                id = "existing-rooms-tab">
+                <img 
+                    src = "/assets/icons/right.png"
+                    alt="arrow-icon"
+                    id = "ToggleExistingRoom"
+                />
+                <div>
+                    <label>Online chat rooms</label>
+                </div>
+            </div>
+            <div 
+            id = "existing-rooms-list" 
+            class = "existing-rooms-list-closed">
+                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+                                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+                                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+                                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+                                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+                                <div
+                    class = "existing-rooms-list-item"
+                >Main Room</div>
+            </div>
+        </div>
+        <div>
+            <ul id="messages" class = "private-messages-mobile"></ul>
+            <div
+            id = "server_message"
+            class = ""
+            ></div>
+            <div
+            id = "bottom_area" 
+            >
+            <div
+                id="bottom_tabs"
+            >
+                <%- include("./partials/notification-tab.ejs") %>
+            </div>
+            <form id="chatform" action="">
+                <input id="input" autocomplete="off" /><button>Send</button>
+            </form>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type = "text/javascript" src = "/scripts/components.js"></script>
+    <script type = "text/javascript" src = "/scripts/functions.js"></script>
+    <script type = "text/javascript" src = "/scripts/menu.js"></script>
+    <script type = "text/javascript" src = "/scripts/user-script.js"></script>
+    <script type = "text/javascript" src = "/scripts/typing-activity.js"></script>
+    <script type = "text/javascript" src = "/scripts/login-form.js"></script>
+    <script type = "text/javascript" src = "/scripts/notification-script.js"></script>
+    <script type = "text/javascript" src = "/scripts/private-chat.js"></script>
+  </body>
+</html>

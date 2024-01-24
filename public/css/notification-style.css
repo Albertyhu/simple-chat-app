@@ -28,10 +28,12 @@
   background-color: #fff;
   border: 1px solid #dbdbdb;
   transition: height 500ms;
+  overflow-y:scroll; 
 }
 
 .notification-body-closed {
   height: 0px !important;
+  overflow-y:hidden; 
 }
 
 .notification-message {
@@ -48,6 +50,10 @@
   display: flex;
   flex-direction: row;
   gap: 10px;
+}
+
+#notification-count {
+  color: #000; 
 }
 
 @media screen and (min-width: 636px) {

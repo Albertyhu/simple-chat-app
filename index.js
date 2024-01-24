@@ -54,6 +54,7 @@ io.on("connection", (socket) => {
     var userID = onlineUsers.get(userRemoved);
     onlineUsers.delete(userRemoved);
     io.emit("remove from list", userID);
+
   });
 
   socket.on("disconnect", () => {
@@ -73,16 +74,34 @@ io.on("connection", (socket) => {
   socket.on("no longer typing", (userN) => {
     io.emit("no longer typing", onlineUsers.get(userN));
   });
+  
+  //socket instence for when a someone once to send an invite 
   socket.on("chat-invite", (invite) => {
     const {
-        invitor_name, 
-        invitor,
+        inviter_name, 
+        //socket.id of inviter
+        inviter,
+        //socket.id of invitee 
         invitee,
+        room,
+        roomKey, 
     } = invite; 
     //perhaps you need to check if invitee is still online
-    const room = ""
-    io.emit(`invite-to-chat-${invitee}`, );
+    //The variable 'invitee' is the socket id that is unique to the user.
+    console.log("invitee: ", invitee)
+    socket.to(invitee).emit(`invited-to-chat`, invite);
+    socket.join(room)
+    console.log(`User joined room: ${roomKey}`);
+    socket.to(room).emit(`In private room ${roomKey}`)
   });
+  socket.on("private-message", (event)=>{
+    const {
+      username, 
+      msg, 
+      roomKey, 
+    } = event;
+    io.to(`room-${roomKey}`).emit("private-message", event)
+  })
 });
 
 app.set("views", path.join(__dirname, "views"));

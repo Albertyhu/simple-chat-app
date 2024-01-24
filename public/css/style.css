@@ -7,6 +7,7 @@
 body {
   margin: 0;
   padding-bottom: 3rem;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
 }
@@ -53,6 +54,7 @@ body {
   padding: 60px 0px 0px 0px;
   margin: 0px;
 }
+
 #messages > li {
   padding: 0.5rem 1rem;
 }
@@ -129,13 +131,27 @@ body {
 }
 
 #navigation {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
+
   background-color: var(--primaryC);
   position: fixed;
   width: 100%;
   height: fit-content;
+}
+
+#navigation-content {
+  position: relative; 
+  width: 100%;
+    display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+#navigation-content > label {
+  position: absolute; 
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%); 
+  font-weight: bold; 
 }
 
 #burger-icon {
@@ -244,6 +260,80 @@ body {
 .btn-primary:active,
 .btn-secondary:active {
   transform: translate(2px, 2px);
+}
+
+#private-chat-container {
+  display: flex; 
+  flex-direction: column; 
+  padding-top: 50px; 
+  width: 100%;
+ }
+
+.private-messages-mobile {
+  padding: 0px !important ;
+}
+
+#existing-rooms {
+  width: 100%;
+}
+
+#existing-rooms-tab{
+  height: 50px; 
+  width: 100%; 
+  background-color: var(--secondaryC); 
+  display: flex;
+  flex-direction: row-reverse; 
+  position: relative; 
+}
+
+#existing-rooms-tab > div {
+  position: absolute; 
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%); 
+}
+
+#existing-rooms-tab > img {
+  width: 50px; 
+  height: 50px; 
+  transition: transform 500ms; 
+  cursor:pointer;
+}
+
+#existing-rooms-list{
+  transition: height 500ms; 
+  height: 200px; 
+  width: 100%; 
+  background-color: #fff;
+  overflow-y: scroll; 
+}
+
+.existing-rooms-list-closed {
+  height: 0px !important; 
+  overflow: hidden; 
+}
+
+.existing-rooms-list-item{
+  text-align: center; 
+  height: 35px; 
+  justify-content: center; 
+  display: flex; 
+  align-items: center; 
+}
+
+.existing-rooms-list-item:nth-child(even){
+    background-color: #dbdbdb; 
+}
+.existing-rooms-list-item:nth-child(odd){
+    background-color: #fff; 
+}
+//toggle button 
+#ToggleExistingRoom{
+  transition: transform 500ms; 
+}
+
+.RototateExistingRoomBtn {
+  transform: rotateZ(90deg); 
 }
 
 @media screen and (min-width: 636px) {

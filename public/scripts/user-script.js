@@ -29,35 +29,6 @@ const Logout = () => {
   socket.emit("remove user", UsernameInput.value);
 };
 
-if (!localUsername) {
-  const LoginForm = document.getElementById("login-form");
-  LoginForm.classList.remove("closeForm");
-  RemoveUserElem();
-} else {
-  var TempKey = genKey(20);
-  const checkUsername = {
-    username: localUsername,
-    TempKey,
-  };
-  socket.emit("new user", checkUsername);
-  socket.on(`checkusername-${TempKey}`, (result) => {
-    if (result.validity) {
-      var chatItem = {
-        username: "",
-        msg: `${username} is connected`,
-      };
-      username = localUsername;
-      userSocketId = result.userSocketId;
-      socket.emit("chat message", chatItem);
-      AddUserElem(username);
-    } else {
-      const LoginForm = document.getElementById("login-form");
-      LoginForm.classList.remove("closeForm");
-      RemoveUserElem();
-    }
-  });
-}
-
 //adds a username to the list of users who are currently online
 const AddUserToList = (userN, ID) => {
   const userLi = document.createElement("li");
@@ -94,12 +65,17 @@ const openInviteBox = (invitee, ID, parentElem) => {
   YesButton.classList.add("btn-primary");
   YesButton.innerText = "Yes";
   YesButton.addEventListener("click", () => {
-    socket.emit(`chat-invite`, {
-      invitor_name: username, 
-      invitor: userSocketId,
+    const roomKey = genKey(20); 
+    const inviteObj = {
+      inviter_name: username, 
+      inviter: userSocketId,
       invitee: ID,
-    });
+      room: `room-${roomKey}`, 
+      roomKey, 
+    }
+    socket.emit(`chat-invite`, inviteObj);
     InviteBox.classList.add("hideInviteBox");
+    window.open(`/private-chat/${roomKey}`); 
   });
 
   const NoButton = document.createElement("button");
@@ -149,3 +125,4 @@ socket.on("remove from list", (userId) => {
   RemoveUserFromList(userId);
   removeUserTypingNote(userId);
 });
+

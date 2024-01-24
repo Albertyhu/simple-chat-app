@@ -8,8 +8,11 @@ var MobileMenu = document.getElementById("MobileMenu");
 var LogoutLink = document.getElementById("logout-link");
 var MenuHeader = document.getElementById("MenuHeader");
 const UserList = document.getElementById("online-list");
+
+//elements for rendering the notification panel 
 var NotificationTab = document.getElementById("notification-header");
 var NotificationBody = document.getElementById("notification-body");
+var NotificationCount = document.getElementById("notification-count")
 
 var socket = io();
 var chatform = document.getElementById("chatform");
@@ -86,3 +89,6 @@ const alpha = [
   "8",
   "9",
 ];
+
+var ToggleExistingRoomBtn = document.getElementById("ToggleExistingRoom"); 
+var MobileExistingRoomList = document.getElementById("existing-rooms-list"); 

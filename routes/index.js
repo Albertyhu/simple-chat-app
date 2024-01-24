@@ -8,4 +8,11 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/private-chat/:id", (req, res)=>{
+  res.render("private-message", {
+    title: 'Private messaging',
+    roomKey: req.params.id, 
+  })  
+})
+
 module.exports = router;
