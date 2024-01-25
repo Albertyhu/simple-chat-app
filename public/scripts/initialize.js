@@ -10,7 +10,6 @@ if (!localUsername) {
     username: localUsername,
     TempKey,
   };
-  console.log("localUsername exists")
   socket.emit("new user", checkUsername);
   socket.on(`checkusername-${TempKey}`, (result) => {
     if (result.validity) {
@@ -20,6 +19,8 @@ if (!localUsername) {
       };
       username = localUsername;
       userSocketId = result.userSocketId;
+      localStorage.setItem("sessionId", result.sessionId); 
+      socket.auth = {sessionId: result.sessionId}; 
       socket.emit("chat message", chatItem);
       AddUserElem(username);
     } else {
@@ -28,4 +29,9 @@ if (!localUsername) {
       RemoveUserElem();
     }
   });
+}
+
+if(SessionID){
+  socket.auth = {sessionID: SessionID}
+  socket.connect(); 
 }

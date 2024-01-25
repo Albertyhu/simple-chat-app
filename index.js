@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const { v4: uuidv4 } = require("uuid"); 
+const { SessionStore} = require("./util/session.js")
 const {
   convertUserMapToArray,
   removeFromMap,
@@ -22,15 +24,34 @@ const server = http.createServer(app);
 const { Server } = require("socket.io")
 const io = new Server(server, {
   cors: {
-    origin: "https://localhost:3000"
+    origin: "http://localhost:3000"
   }
 });
+
+const ExistingSession = new SessionStore(); 
 
 var indexRouter = require("./routes/index");
 
 app.use("/", indexRouter);
 
 var onlineUsers = new Map();
+
+io.use((socket, next)=>{
+  const sessionID = socket.handshake.auth.sessionID;
+  if (sessionID) {
+    // find existing session
+    const session = ExistingSession.findSession(sessionID);
+    if (session) {
+      console.log("session: ", session)
+      socket.sessionID = sessionID;
+      socket.userID = session.userID;
+      socket.username = session.username;
+      return next();
+    }
+  }
+  socket.sessionID = uuidv4();
+  next(); 
+})
 
 io.on("connection", (socket) => {
   var userMap = convertUserMapToArray(onlineUsers);
@@ -44,6 +65,7 @@ io.on("connection", (socket) => {
     if (isUsernameUnique(username, onlineUsers)) {
       var socketID = socket.id;
       onlineUsers.set(username, socketID);
+      console.log("existing users: ", onlineUsers)
       var newUserMap = convertUserMapToArray(onlineUsers);
       io.emit("update user list", newUserMap);
       ValidName = true;
@@ -51,6 +73,7 @@ io.on("connection", (socket) => {
     const result = {
       validity: ValidName,
       userSocketId: socketID,
+      sessionId: socket.sessionID, 
     };
     io.emit(`checkusername-${TempKey}`, result);
   });
@@ -62,14 +85,26 @@ io.on("connection", (socket) => {
 
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     var userN = getNameById(socket.id, onlineUsers);
     onlineUsers = new Map(removeFromMap(socket.id, onlineUsers));
-    console.log("updated list: ", onlineUsers);
     var chatItem = { username: "", msg: `${userN} is disconnected` };
     io.emit("chat message", chatItem);
     var newUserMap = convertUserMapToArray(onlineUsers);
     io.emit("update user list", newUserMap);
+    console.log("A user disconnected: ", socket.id)
+
+    //needs code to check if user is disconnected from all existing chat rooms; 
+    const matchingSockets = await io.in(socket.id).allSockets();
+    console.log("matchingSockets: ", matchingSockets)
+    const isDisconnected = matchingSockets.size === 0;
+    if(matchingSockets.size === 0){
+      ExistingSession.saveSession(socket.sessionID, {
+          userID: socket.id, 
+          connected:false, 
+      })
+    }
+
   });
 
   //when a user is typing
@@ -97,23 +132,26 @@ io.on("connection", (socket) => {
   socket.on("accept-private-chat-invite", (roomKey)=>{
     socket.join(`room-${roomKey}`)
   })
+
   //notifies the server when a user joins a private chat room
-  socket.on("joined-private-chat", (event)=>{
+  socket.on("joined-private-chat", async (event)=>{
     const { roomKey, username} = event; 
     const chatItem = {
-      username, 
+      username: null, 
       msg: `${username} has joined the private chat room.`, 
       roomKey, 
       authorSocketId: null,      
     }
     //broadcast message to the chat room 
     socket.emit(`room-${roomKey}`, chatItem)
-    //updates the number of users in the chat room; 
 
-    //This is not working
-    const Ids = io.sockets.adapter.rooms.get(`room-${roomKey}`)
-    console.log("Ids set: ", Ids)
+    //updates the number of users in the chat room; 
+    const Ids = io.sockets.adapter.rooms.get(`room-${roomKey}`);
     const UsersInChat = createArrayOfUsers(Ids, onlineUsers)
+    
+    const matchingSockets = await io.in(socket.id).allSockets();
+    console.log("matchingSockets: ", matchingSockets)
+
     socket.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })
   socket.on("private-message", (event)=>{
@@ -123,7 +161,6 @@ io.on("connection", (socket) => {
       roomKey, 
       authorSocketId, 
     } = event;
-    console.log("roomKey: ", roomKey)
     const room = `room-${roomKey}`
     io.emit(`room-${roomKey}`, event)
   })

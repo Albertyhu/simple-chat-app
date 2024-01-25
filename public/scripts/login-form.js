@@ -23,6 +23,8 @@ LoginForm.addEventListener("submit", (e) => {
     socket.on(`checkusername-${TempKey}`, (result) => {
       if (result.validity) {
         localStorage.setItem("username", Username);
+        localStorage.setItem("sessionId", result.sessionId)
+        socket.auth = {sessionId: result.sessionId}
         if (!LoginForm.classList.contains("closeForm"))
           LoginForm.classList.add("closeForm");
         var chatItem = {

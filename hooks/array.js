@@ -32,16 +32,20 @@ const getNameById = (id, MAP) => {
 
 //takes a Set of Socket Ids, finds the corresponding username and returns them into an array 
 const createArrayOfUsers = (setObj, mapObj) =>{
-  const userArray = []; 
-  setObj?.forEach(ID =>{
-    const userN = getNameById(ID, mapObj)
-    const user = {
-      username: userN, 
-      id: ID, 
-    }
-    userArray.push(user)
-  })
-  return userArray 
+  if(setObj){
+    const userArray = []; 
+    setObj?.forEach(ID =>{
+      const userN = getNameById(ID, mapObj)
+      const user = {
+        username: userN, 
+        id: ID, 
+      }
+      userArray.push(user)
+    })
+    return userArray 
+  }
+  console.log("setObj is undefined: ", setObj)
+  return null; 
 }
 
 const isUsernameUnique = (username, MapSet) => {
