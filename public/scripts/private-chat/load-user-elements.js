@@ -1,3 +1,60 @@
+//Keeps track of messages in private chat history 
+class ChatHistoryClass {
+  constructor(roomKey){
+    //messages recods comments of one chat room. 
+    this.messages = [];
+    this.roomKey = roomKey; 
+  }
+  recordMessage = (msg, author, authorId, time) =>{
+    this.messages.push({msg, author, authorId, time})
+  }
+  getChatSizeById = (roomKey)=>{
+    return this.messages.get(roomKey).length; 
+  }
+  getAll = () =>{
+    return this.messages; 
+  }
+  getMessagesByAuthor = (authorId) =>{
+    return this.messages.map(val => val.authorId === authorId); 
+  }
+
+  getMessagesByDateRange = (start, end) =>{
+    if(start instanceof Date && end instanceof Date) {
+      return this.messages.filter(chat =>chat.time > start && chat.time < end)
+      
+    }
+    else{
+      console.log("Error: start and/or end parameters don't hold Date objects")
+      return []; 
+    }
+  }
+
+  getMessagesBeforeDate = (time) =>{
+    if(time instanceof Date){
+      return this.message.filter(chat=>chat.time < time)
+    }
+    else {
+      console.log("error: argument doesn't hold a value of Date object")
+      return []; 
+    }
+  }
+  getMessagesAfterDate = (time) =>{
+    if(time instanceof Date){
+      return this.message.filter(chat=>chat.time > time)
+    }
+    else {
+      console.log("error: argument doesn't hold a value of Date object")
+      return []; 
+    }
+  }
+} 
+
+
+//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
+const Room = `room-${roomKey}`
+
+const ChatHistory = new ChatHistoryClass(roomKey)
+
 const AddUserElem = (userN) => {
   MenuHeader.style.display = "block";
   MenuHeader.innerHTML = `<p>You are logged in as</p><p><b>${userN}</b></p>`;

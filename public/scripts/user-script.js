@@ -5,6 +5,8 @@ const AddUserElem = (userN) => {
   chatform.style.display = "flex";
 };
 
+console.log("session ID: ", sessionID )
+
 const RemoveUserElem = () => {
   LogoutLink.style.display = "none";
   MenuHeader.innerHTML = "";
