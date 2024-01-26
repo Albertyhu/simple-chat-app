@@ -1,3 +1,11 @@
+/**
+ * type session ={
+ *  userID: string, 
+ *  username: string, 
+ *  connected: boolean, 
+ * }
+ * 
+ */
 class SessionStore {
   constructor(){
     this.sessions = new Map(); 

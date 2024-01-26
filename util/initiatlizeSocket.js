@@ -1,6 +1,10 @@
 const { v4: uuidv4 } = require("uuid"); 
 const { SessionStore} = require("./session.js"); 
 const {MessageStorage} = require("./messageStore.js"); 
+const { 
+  SessionMiddleware, 
+  wrap, 
+ } = require("../middlewares/sessionMiddleware.js")
 
 const {
   convertUserMapToArray,
@@ -18,6 +22,10 @@ const messageStore = new MessageStorage();
 var onlineUsers = new Map(); 
 
 const InitializeSocket = (io) =>{
+
+//The wrap middleware serves the purpose of making express-session work with socket.io 
+io.use(wrap(SessionMiddleware)); 
+
 io.use((socket, next)=>{
   const sessionID = socket.handshake.auth.sessionId;
   if (sessionID) {
@@ -31,6 +39,7 @@ io.use((socket, next)=>{
     }
   }
   socket.sessionID = uuidv4();
+  socket.userID = uuidv4(); 
   next();  
 })
 

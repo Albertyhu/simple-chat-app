@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const session = require("express-session")
+const { 
+  SessionMiddleware, 
+ } = require("./middlewares/sessionMiddleware.js")
 const { InitializeSocket } = require("./util/initiatlizeSocket.js"); 
 const {v4: uuidv4} = require("uuid"); 
 const http = require("http");
-require('dotenv').config();
+require('dotenv').config(); 
 
 //Imports the built in Node JS http module
 
@@ -23,15 +25,10 @@ const io = new Server(server, {
 
 var indexRouter = require("./routes/index");
 app.set("trust proxy", 1)
-app.use(session({
-  genid: function(req){
-    return uuidv4();
-  },
-  secret: process.env.EXPRESS_SESSION_SK, 
-  resave: false, 
-  saveUninitialized: true,
-  cookie: {maxAge: 60000 }
-}))
+
+//allows server to parse any incoming json 
+app.use(express.json)
+app.use(SessionMiddleware)
 app.use("/", indexRouter);
 InitializeSocket(io);
 
