@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
     const result = {
       validity: ValidName,
       userSocketId: socketID,
-      sessionId: socket.sessionID, 
+      sessionId: socket.request.session.instance, 
     };
     io.emit(`checkusername-${TempKey}`, result);
   });
@@ -88,7 +88,6 @@ io.on("connection", (socket) => {
     const matchingSockets = await io.in(socket.id).allSockets();
     console.log("matchingSockets: ", matchingSockets) 
     const isDisconnected = matchingSockets.size === 0;
-    console.log("socket request session instance: ", socket.request.session)
     // let SessionId = socket.request.session.instance.id; 
     // if(matchingSockets.size === 0 && typeof SessionId != 'undefined'){
     //   const updateSession = socket.request.session.instance; 

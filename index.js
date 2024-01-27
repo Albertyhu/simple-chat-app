@@ -26,12 +26,14 @@ const io = new Server(server, {
 });
 
 var indexRouter = require("./routes/index");
+var authRouter = require("./routes/auth")
 app.set("trust proxy", 1)
 
 //allows server to parse any incoming json 
 app.use(express.json())
 app.use(SessionMiddleware)
 app.use("/", indexRouter);
+app.use("/auth", authRouter)
 InitializeSocket(io);
 
 app.set("views", path.join(__dirname, "views"));

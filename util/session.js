@@ -19,7 +19,7 @@ class SessionStore {
   findSessionByName(username){
     let user = null; 
     this.sessions.forEach(session =>{
-        if(session.username === username.trim()){
+        if(session?.username === username.trim()){
             user = this.findSession(session.id)
         }
     })
