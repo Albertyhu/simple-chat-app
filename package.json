@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -e js,ejs /www/bin"
+    "dev": "nodemon ./bin/www"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +21,6 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "prettier": "3.2.4",
-    "typescript": "^5.3.3"
+    "prettier": "3.2.4"
   }
 }

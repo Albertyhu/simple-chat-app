@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid"); 
 const { SessionStore} = require("./session.js"); 
 const {MessageStorage} = require("./messageStore.js"); 
+
 const { 
   SessionMiddleware, 
   wrap, 
@@ -27,7 +28,7 @@ const InitializeSocket = (io) =>{
 io.use(wrap(SessionMiddleware)); 
 
 io.use((socket, next)=>{
-  const sessionID = socket.handshake.auth.sessionId;
+  const sessionID = socket.request.session.instance; 
   if (sessionID) {
     // find existing session
     const session = ExistingSession.findSession(sessionID);
@@ -53,9 +54,9 @@ io.on("connection", (socket) => {
     const { username, TempKey } = newUser;
     let ValidName = false;
     if (isUsernameUnique(username, onlineUsers)) {
+      socket.request.session.instance = AddSession(username)
       var socketID = socket.id;
       onlineUsers.set(username, socketID);
-      console.log("existing users: ", onlineUsers)
       var newUserMap = convertUserMapToArray(onlineUsers);
       io.emit("update user list", newUserMap);
       ValidName = true;
@@ -65,7 +66,6 @@ io.on("connection", (socket) => {
       userSocketId: socketID,
       sessionId: socket.sessionID, 
     };
-    console.log("online users: ", onlineUsers)
     io.emit(`checkusername-${TempKey}`, result);
   });
 
@@ -73,7 +73,6 @@ io.on("connection", (socket) => {
     var userID = onlineUsers.get(userRemoved);
     onlineUsers.delete(userRemoved);
     io.emit("remove from list", userID);
-
   });
 
   socket.on("disconnect", async () => {
@@ -87,15 +86,15 @@ io.on("connection", (socket) => {
 
     //needs code to check if user is disconnected from all existing chat rooms; 
     const matchingSockets = await io.in(socket.id).allSockets();
-    console.log("matchingSockets: ", matchingSockets)
+    console.log("matchingSockets: ", matchingSockets) 
     const isDisconnected = matchingSockets.size === 0;
-    if(matchingSockets.size === 0){
-      ExistingSession.saveSession(socket.sessionID, {
-          userID: socket.id, 
-          connected:false, 
-      })
-    }
-
+    console.log("socket request session instance: ", socket.request.session)
+    // let SessionId = socket.request.session.instance.id; 
+    // if(matchingSockets.size === 0 && typeof SessionId != 'undefined'){
+    //   const updateSession = socket.request.session.instance; 
+    //   updateSession.connected = false; 
+    //   ExistingSession.saveSession(SessionId, updateSession)
+    // }
   });
 
   //when a user is typing
@@ -145,6 +144,8 @@ io.on("connection", (socket) => {
 
     socket.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })
+
+  //mesaging private chats 
   socket.on("private-message", (event)=>{
     const {
       username, 
@@ -152,11 +153,12 @@ io.on("connection", (socket) => {
       roomKey, 
       authorSocketId, 
       date, 
-    } = event;
+    } = event; 
     const room = `room-${roomKey}`; 
     io.emit(`room-${roomKey}`, event)
     messageStore(roomKey, username, authorSocketId, msg, date)
   })
+
   //when a user is typing in specific private chat room 
   socket.on(`typing private chat`, (event)=>{
     const {
@@ -175,6 +177,25 @@ io.on("connection", (socket) => {
 });
 }
 
+const AddSession = (username) =>{
+    let session =  ExistingSession.findSessionByName(username)
+    //create a new session if one doesn't exist; 
+    if(!session || session === null || session === undefined){
+        const newId = uuidv4(); 
+        session = {
+            id: newId,
+            username,  
+            connected: true, 
+        }
+        ExistingSession.saveSession(newId, session)
+    console.log("new session: ", session)
+
+    }
+    return session; 
+}
+
 module.exports = {
-    InitializeSocket
+    InitializeSocket,
+    messageStore,
+    ExistingSession, 
   }

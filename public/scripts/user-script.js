@@ -7,12 +7,12 @@ const AddUserElem = (userN) => {
 
 console.log("session ID: ", sessionID )
 
-const RemoveUserElem = () => {
-  LogoutLink.style.display = "none";
-  MenuHeader.innerHTML = "";
-  MenuHeader.style.display = "none";
-  chatform.style.display = "none";
-};
+// const RemoveUserElem = () => {
+//   LogoutLink.style.display = "none";
+//   MenuHeader.innerHTML = "";
+//   MenuHeader.style.display = "none";
+//   chatform.style.display = "none";
+// };
 
 const Logout = () => {
   MobileMenu.classList.add("closed-menu");

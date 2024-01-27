@@ -1,6 +1,15 @@
 const { v4: uuidv4 } = require("uuid")
+/**
+ * type message = {
+ * roomKey: string,
+ * author: string, 
+ * authorId: string, 
+ * msg: string, 
+ * time: Date, 
+ * }
+ */
 
-class MessageStorage {
+class MessageStorage { 
     constructor(){
         this.messages = new Map(); 
     }
