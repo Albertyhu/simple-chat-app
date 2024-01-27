@@ -1,4 +1,7 @@
 const session = require("express-session")
+const {
+        UpdateClientOnlineList, 
+    } = require("../socket-methods/auth.js")
 const {v4:uuidv4} = require("uuid")
 const { 
     messageStore,
@@ -20,7 +23,6 @@ const AddUser = (req, res, next) =>{
         ExistingSession.saveSession(newId, session)
     }
     req.session.instance = session; 
-    console.log("set: ", ExistingSession.returnAllSession())
     return res.status(200).json(session)
 }
 

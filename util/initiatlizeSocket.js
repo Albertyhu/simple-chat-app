@@ -1,6 +1,9 @@
 const { v4: uuidv4 } = require("uuid"); 
 const { SessionStore} = require("./session.js"); 
 const {MessageStorage} = require("./messageStore.js"); 
+const {
+  ReceiveNewUser, 
+} = require("../socket-methods/auth.js"); 
 
 const { 
   SessionMiddleware, 
@@ -50,24 +53,8 @@ io.on("connection", (socket) => {
   socket.on("chat message", (message) => {
     io.emit("chat message", message);
   });
-  socket.on("new user", (newUser) => {
-    const { username, TempKey } = newUser;
-    let ValidName = false;
-    if (isUsernameUnique(username, onlineUsers)) {
-      socket.request.session.instance = AddSession(username)
-      var socketID = socket.id;
-      onlineUsers.set(username, socketID);
-      var newUserMap = convertUserMapToArray(onlineUsers);
-      io.emit("update user list", newUserMap);
-      ValidName = true;
-    }
-    const result = {
-      validity: ValidName,
-      userSocketId: socketID,
-      sessionId: socket.request.session.instance, 
-    };
-    io.emit(`checkusername-${TempKey}`, result);
-  });
+
+  ReceiveNewUser({io, socket, ExistingSession}); 
 
   socket.on("remove user", (userRemoved) => {
     var userID = onlineUsers.get(userRemoved);

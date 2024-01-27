@@ -116,9 +116,12 @@ socket.on("update user list", (userList) => {
   OnlineUsers = userList;
   UserList.innerHTML = "";
   serverMessage.innerHTML = "";
+  console.log("user-list: ", userList)
   userList.forEach((user) => {
-    AddUserToList(user.username, user.id);
-    addUserTypingNote(user.username, user.id);
+    if(user.connected){
+      AddUserToList(user.username, user.id);
+      addUserTypingNote(user.username, user.id);
+      }
   });
 });
 
