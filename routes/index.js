@@ -6,8 +6,6 @@ const {
 var router = express.Router();
 
 router.get("/", (req, res) => {
-  const sessionId = req.session; 
-  console.log("session ",sessionId)
   res.render("index", {
     title: "Chat application",
     sessionID: req.session, 

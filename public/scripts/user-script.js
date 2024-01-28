@@ -5,8 +5,6 @@ const AddUserElem = (userN) => {
   chatform.style.display = "flex";
 };
 
-console.log("session ID: ", sessionID )
-
 // const RemoveUserElem = () => {
 //   LogoutLink.style.display = "none";
 //   MenuHeader.innerHTML = "";
@@ -51,6 +49,7 @@ const RemoveUserFromList = (ID) => {
 };
 
 //opens box to invite a user
+//ID argument belongs to the invitee
 const openInviteBox = (invitee, ID, parentElem) => {
   const InviteBox = document.createElement("div");
   InviteBox.classList.add("inviteBox");
@@ -69,8 +68,8 @@ const openInviteBox = (invitee, ID, parentElem) => {
   YesButton.addEventListener("click", () => {
     const roomKey = genKey(20); 
     const inviteObj = {
-      inviter_name: username, 
-      inviter: userSocketId,
+      inviter_name: Session.username, 
+      inviter: Session.id,
       invitee: ID,
       roomKey, 
     }
@@ -116,7 +115,7 @@ socket.on("update user list", (userList) => {
   OnlineUsers = userList;
   UserList.innerHTML = "";
   serverMessage.innerHTML = "";
-  console.log("user-list: ", userList)
+  console.log("user list: ", userList)
   userList.forEach((user) => {
     if(user.connected){
       AddUserToList(user.username, user.id);
@@ -129,4 +128,3 @@ socket.on("remove from list", (userId) => {
   RemoveUserFromList(userId);
   removeUserTypingNote(userId);
 });
-

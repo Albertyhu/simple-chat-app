@@ -1,4 +1,4 @@
-socket.emit("joined-private-chat", {roomKey, username})
+socket.emit("joined-private-chat", {roomKey, username: Session.username})
 
 ToggleExistingRoomBtn.addEventListener("click", ()=>{
     if(!MobileExistingRoomList.classList.contains("existing-rooms-list-closed")){
@@ -16,7 +16,8 @@ const submitEvent = (e) => {
   e.preventDefault();
   var dateObj = new Date();
   const chatItem = {
-    username: username,
+    username: Session.username,
+    id: Session.sessionId, 
     authorSocketId: userSocketId, 
     msg: input.value,
     roomKey: roomKey, 

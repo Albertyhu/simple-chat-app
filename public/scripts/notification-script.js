@@ -1,4 +1,3 @@
-
 const IncrementNotification = () => {
   var newNotification = localStorage.getItem("new_notification")
   newNotification++; 
@@ -71,7 +70,6 @@ const RemoveNotification = (child, parent) =>{
 }
 
 socket.on(`invited-to-chat`, (invite) => {
-  console.log("received invitation: ", invite)
   IncrementNotification();  
   const {
       inviter_name, 

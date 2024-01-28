@@ -1,3 +1,8 @@
+//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
+const Room = `room-${roomKey}`
+
+console.log("Room: ", Session)
+
 //Keeps track of messages in private chat history 
 class ChatHistoryClass {
   constructor(roomKey){
@@ -49,10 +54,6 @@ class ChatHistoryClass {
   }
 } 
 
-
-//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
-const Room = `room-${roomKey}`
-
 const ChatHistory = new ChatHistoryClass(roomKey)
 
 const AddUserElem = (userN) => {
@@ -62,12 +63,12 @@ const AddUserElem = (userN) => {
   chatform.style.display = "flex";
 };
 
-const RemoveUserElem = () => {
-  LogoutLink.style.display = "none";
-  MenuHeader.innerHTML = "";
-  MenuHeader.style.display = "none";
-  chatform.style.display = "none";
-};
+// const RemoveUserElem = () => {
+//   LogoutLink.style.display = "none";
+//   MenuHeader.innerHTML = "";
+//   MenuHeader.style.display = "none";
+//   chatform.style.display = "none";
+// };
 
 const Logout = () => {
   MobileMenu.classList.add("closed-menu");

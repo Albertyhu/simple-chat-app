@@ -1,10 +1,10 @@
 input.addEventListener("keydown", (e) => {
-  socket.emit("user is typing", username);
+  socket.emit("user is typing", Session.sessionId);
 });
 
 input.addEventListener("keyup", (e) => {
   if (!serverMessage.classList.contains("hideServerMessage")) {
-    socket.emit("no longer typing", username);
+    socket.emit("no longer typing", Session.sessionId);
   }
 });
 

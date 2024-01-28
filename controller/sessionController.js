@@ -22,7 +22,6 @@ const AddUser = (req, res, next) =>{
         }
         ExistingSession.saveSession(newId, session)
     }
-    req.session.instance = session; 
     return res.status(200).json(session)
 }
 

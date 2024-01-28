@@ -5,6 +5,7 @@ const { convertUserMapToArrays } = require("../hooks/array.js")
  *  id: string, 
  *  username: string, 
  *  connected: boolean, 
+ *  socketId: string, 
  * }
  * 
  */
@@ -16,14 +17,32 @@ class SessionStore{
   findSession(id) {
     return this.sessions.get(id);
   }
+  updateUserSocketId(id, newSocketID){
+    var session = this.sessions.get(id);
+    session.socketId = newSocketID; 
+    this.sessions.set(id, session)
+  }
+  getUserSocketId(id){
+    var session = this.sessions.get(id)
+    return session.socketId; 
+  }
   findSessionByName(username){
     let user = null; 
     this.sessions.forEach(session =>{
         if(session?.username === username.trim()){
-            user = this.findSession(session.id)
+            user = session; 
         }
     })
     return user; 
+  }
+  findSessionBySocketId(socketId){
+    let session = null
+    this.sessions.forEach(item =>{
+      if(item.socketId === socketId){
+        session = item; 
+      }
+    })
+    return session; 
   }
   findIDByName(name){
     let id = null; 
@@ -35,6 +54,18 @@ class SessionStore{
       })
       return id; 
     }catch(e){console.log("error: ", e)}
+  }
+  getName(id){
+    return this.sessions.find(id).username
+  }
+  getNameBySocketId(socketId){
+    let name = null;
+    this.sessions.forEach(item =>{
+      if(item.socketId === socketId){
+        name = item.username; 
+      }
+    })
+    return name; 
   }
   changeName(id, newName){
     let updateSession = this.session.get(id)
@@ -76,6 +107,7 @@ class SessionStore{
         id: key, 
         username: value.username, 
         connected: value.connected,
+        socketId: value.socketId, 
       }
       arr.push(obj)
     })

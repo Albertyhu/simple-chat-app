@@ -1,7 +1,8 @@
 const submitEvent = (e) => {
   e.preventDefault();
   const chatItem = {
-    username: username,
+    username: Session.username,
+    id: Session.id, 
     msg: input.value,
   };
   if (input.value) {

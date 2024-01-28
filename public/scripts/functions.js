@@ -32,11 +32,12 @@ const AuthenticateUsername = async (userN) =>{
   })
   .then(async response => await response.json())
   .then(result =>{
-    Session.saveSessionInfo(result.username, result.id)
-    
+    Session.saveSessionInfo(result.username, result.id, true)
     if (!LoginForm.classList.contains("closeForm"))
       LoginForm.classList.add("closeForm");
     AddUserElem(result.username);
+    //save session info in client side 
+    Session.saveSessionInfo(result.username, result.id, true)
 
     socket.emit("user info received", result)
   })
