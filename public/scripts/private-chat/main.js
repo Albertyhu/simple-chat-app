@@ -1,5 +1,3 @@
-socket.emit("joined-private-chat", {roomKey, username: Session.username})
-
 ToggleExistingRoomBtn.addEventListener("click", ()=>{
     if(!MobileExistingRoomList.classList.contains("existing-rooms-list-closed")){
         ToggleExistingRoomBtn.classList.remove("RototateExistingRoomBtn"); 
@@ -18,7 +16,6 @@ const submitEvent = (e) => {
   const chatItem = {
     username: Session.username,
     id: Session.sessionId, 
-    authorSocketId: userSocketId, 
     msg: input.value,
     roomKey: roomKey, 
     date: dateObj, 
@@ -37,28 +34,34 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-socket.on(Room, (chatItem) => {
-  console.log("chatItem: ", chatItem)
-  var item = document.createElement("li");
-  if (chatItem.username) {
-    var divElement = document.createElement("div");
-    divElement.classList.add("usernameDiv");
-    var user_name = document.createElement("p");
-    user_name.innerText = chatItem.username;
-    user_name.classList.add("usernameStyle");
-    divElement.append(user_name);
-
-    var time = document.createElement("p");
-    time.innerText = new Date(chatItem.date);
-    time.style.fontStyle = "italic";
-    divElement.append(time);
-    item.append(divElement);
-    ChatHistory.recordMessage(chatItem.msg, chatItem.username, chatItem.authorSocketId, chatItem.date)
+socket.on(`room-${roomKey}-chat-history`, (chatHistory)=>{
+  if(chatHistory != null && chatHistory != undefined){
+    chatHistory.forEach(item => {RenderMessage(item)})
   }
-  var message = document.createElement("p");
-  message.innerText = chatItem.msg;
+})
 
-  item.append(message);
-  messages.appendChild(item);
+socket.on(Room, (chatItem) => {
+  // var item = document.createElement("li");
+  // if (chatItem.username) {
+  //   var divElement = document.createElement("div");
+  //   divElement.classList.add("usernameDiv");
+  //   var user_name = document.createElement("p");
+  //   user_name.innerText = chatItem.username;
+  //   user_name.classList.add("usernameStyle");
+  //   divElement.append(user_name);
+
+  //   var time = document.createElement("p");
+  //   time.innerText = new Date(chatItem.date);
+  //   time.style.fontStyle = "italic";
+  //   divElement.append(time); 
+  //   item.append(divElement);
+  //   ChatHistory.recordMessage(chatItem.msg, chatItem.username, chatItem.authorSocketId, chatItem.date)
+  // }
+  // var message = document.createElement("p");
+  // message.innerText = chatItem.msg;
+
+  // item.append(message);
+  // messages.appendChild(item);
+  RenderMessage(chatItem)
   window.scrollTo(0, document.body.scrollHeight);
 });

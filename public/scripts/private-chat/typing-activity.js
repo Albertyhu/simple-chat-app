@@ -3,7 +3,7 @@
 input.addEventListener("keydown", (e) => {
   const event = {
     roomKey,
-    username, 
+    id: Session.sessionId, 
   } 
   socket.emit(`typing private chat`, event);
 });
@@ -11,7 +11,7 @@ input.addEventListener("keydown", (e) => {
 input.addEventListener("keyup", (e) => {
   const event = {
     roomKey,
-    username, 
+    id: Session.sessionId, 
   } 
   if (!serverMessage.classList.contains("hideServerMessage")) {
     socket.emit(`no longer typing in private chat`, event);

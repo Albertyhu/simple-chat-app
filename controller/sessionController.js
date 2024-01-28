@@ -36,7 +36,19 @@ const LogSession = (req, res) =>{
     }
 }
 
+const RetrieveChat = ( req, res )=>{
+    const {roomKey} = req.params; 
+    var chatHistory = []; 
+    try{
+        chatHistory = messageStore.getChatHistoryById(roomKey)
+    } catch(e){
+        return res.status(400).json({error: e})
+    }
+    return res.status(200).json({messages: chatHistory})
+}
+
 module.exports = {
     AddUser, 
-    LogSession 
+    LogSession,
+    RetrieveChat
 } 

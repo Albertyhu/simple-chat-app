@@ -53,10 +53,28 @@ const isUsernameUnique = (username, MapSet) => {
   return true;
 };
 
+const CompareArrays = (arr1, arr2) =>{
+  if(Array.isArray(arr1) && Array.isArray(arr2)){
+    if(arr1.length === arr2.length){
+      const size = arr1.length; 
+      const sorted1 = arr1.slice().sort((a,b) => a - b)
+      const sorted2 = arr2.slice().sort((a,b) => a - b)
+      for(var i = 0; i < size; i++){
+        if(sorted1[i] != sorted2[i]){
+          return false 
+        }
+      }
+      return true
+    }
+  }
+  return false; 
+}
+
 module.exports = {
   convertUserMapToArray,
   removeFromMap,
   getNameById,
   createArrayOfUsers, 
   isUsernameUnique,
+  CompareArrays,
 };

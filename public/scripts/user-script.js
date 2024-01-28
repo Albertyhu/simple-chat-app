@@ -5,13 +5,6 @@ const AddUserElem = (userN) => {
   chatform.style.display = "flex";
 };
 
-// const RemoveUserElem = () => {
-//   LogoutLink.style.display = "none";
-//   MenuHeader.innerHTML = "";
-//   MenuHeader.style.display = "none";
-//   chatform.style.display = "none";
-// };
-
 const Logout = () => {
   MobileMenu.classList.add("closed-menu");
   var userN = localStorage.getItem("username");
@@ -69,7 +62,7 @@ const openInviteBox = (invitee, ID, parentElem) => {
     const roomKey = genKey(20); 
     const inviteObj = {
       inviter_name: Session.username, 
-      inviter: Session.id,
+      inviter: Session.sessionId,
       invitee: ID,
       roomKey, 
     }
