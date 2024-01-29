@@ -1,6 +1,3 @@
-//The variable 'roomKey' will be passed from the server to the private-message.ejs file and can be used as a global variable
-const Room = `room-${roomKey}`
-
 //Keeps track of messages in private chat history 
 class ChatHistoryClass {
   constructor(roomKey){
@@ -164,12 +161,12 @@ socket.on(`update-list-in-room-${roomKey}`, (UsersInChat) => {
   UserList.innerHTML = "";
   serverMessage.innerHTML = "";
   UsersInChat.forEach((user) => {
-    AddUserToList(Session.username, Session.sessionId);
-    addUserTypingNote(Session.username, Session.sessionId);
+    AddUserToList(user.username, user.id);
+    addUserTypingNote(user.username, user.id);
   });
 });
 
-socket.on("remove from list", (userId) => {
+socket.on("remove from list", (userId) => { 
   RemoveUserFromList(userId);
   removeUserTypingNote(userId);
 });

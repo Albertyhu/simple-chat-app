@@ -8,6 +8,7 @@ const {
     ExistingSession  
 } = require("../util/initiatlizeSocket.js"); 
 
+//This is sends the necessary information to the client to render the page
 const AddUser = (req, res, next) =>{
     const {username} = req.body; 
     //Check if the username is already registered with the site and has an existing session 
@@ -36,6 +37,32 @@ const LogSession = (req, res) =>{
     }
 }
 
+const AddUserInPrivateChat = (req, res) =>{
+    const {username} = req.body; 
+    const {roomKey} = req.params; 
+    //Check if the username is already registered with the site and has an existing session 
+    let session =  ExistingSession.findSessionByName(username)
+    //create a new session if one doesn't exist; 
+    if(!session){
+        const newId = uuidv4(); 
+        session = {
+            id: newId, 
+            username,  
+            connected: true, 
+        }
+        ExistingSession.saveSession(newId, session)
+    }
+    var chatHistory = []; 
+    try{
+        chatHistory = messageStore.getChatHistoryById(roomKey)
+    } catch(e){
+        return res.status(500).json({error: e})
+    }
+    console.log("chatHistory: ", chatHistory)
+    return res.status(200).json({sessionInfo: session, message: chatHistory})
+}
+
+//obsolete
 const RetrieveChat = ( req, res )=>{
     const {roomKey} = req.params; 
     var chatHistory = []; 
@@ -50,5 +77,6 @@ const RetrieveChat = ( req, res )=>{
 module.exports = {
     AddUser, 
     LogSession,
+    AddUserInPrivateChat, 
     RetrieveChat
 } 

@@ -1,7 +1,7 @@
 const express = require("express");
 const {    
     AddUser, 
-    LogSession 
+    LogSession,
   } = require("../controller/sessionController.js"); 
 
 var router = express.Router();

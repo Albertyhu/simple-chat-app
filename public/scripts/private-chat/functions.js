@@ -11,12 +11,47 @@ function replaceWhiteSpaces(inputString) {
   return inputString.replace(/\s/g, "_");
 }
 
-const RemoveUserElem = () => {
-  LogoutLink.style.display = "none";
-  MenuHeader.innerHTML = "";
-  MenuHeader.style.display = "none";
-  chatform.style.display = "none";
-};
+  const RemoveUserElem = () => {
+    LogoutLink.style.display = "none";
+    MenuHeader.innerHTML = "";
+    MenuHeader.style.display = "none";
+    chatform.style.display = "none";
+  };
+
+const TestChat = () =>{
+  const num1 = Math.random() * 100; 
+  const num2 = Math.random() * 100; 
+
+  const SampleItems = [
+    {
+      username: Session.username,
+      id: Session.sessionId, 
+      msg: `This is a test message ${num1}`,
+      roomKey: roomKey, 
+      date: new Date(), 
+    }, 
+    {
+      username: Session.username,
+      id: Session.sessionId, 
+      msg: `This is a test message ${num2}`,
+      roomKey: roomKey, 
+      date: new Date(), 
+    }, 
+  ]
+
+  SampleItems.forEach(item =>{
+    socket.emit("private-message", item);
+  })
+}
+
+/**
+ * 
+ * type chatItem = {
+ *  username: string, 
+ *  msg: string,
+ *  time: Date, 
+ * }
+ */
 
 const RenderMessage = (chatItem)=>{
   var item = document.createElement("li");
@@ -44,8 +79,8 @@ const RenderMessage = (chatItem)=>{
 
 //responsible for creating sessions for users 
 //Need to work on emiting message to server that user is online so his username gets put under "online users" in the menu
-const AuthenticateUsername = async (userN) =>{
-  await fetch("/auth/add-user", {
+const AuthenticateUsername = async (userN, roomKey) =>{
+  await fetch(`/private-chat/load-user/${roomKey}`, {
     method: "POST",
     body: JSON.stringify({
       username: userN, 
@@ -56,15 +91,22 @@ const AuthenticateUsername = async (userN) =>{
   })
   .then(async response => await response.json())
   .then(result =>{
-    Session.saveSessionInfo(result.username, result.id, true)
+    const {
+      sessionInfo,
+      message, 
+    } = result; 
+    Session.saveSessionInfo(sessionInfo.username, sessionInfo.id, true)
     if (!LoginForm.classList.contains("closeForm"))
       LoginForm.classList.add("closeForm");
-    AddUserElem(result.username);
+    AddUserElem(sessionInfo.username);
     //save session info in client side 
-    Session.saveSessionInfo(result.username, result.id, true)
+    Session.saveSessionInfo(sessionInfo.username, sessionInfo.id, true)
 
-    socket.emit("user info received", result)
-    socket.emit("joined-private-chat", {roomKey, username: Session.username})
+    socket.emit("user info received", sessionInfo)
+    socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})
+    message.forEach(chatItem =>{
+      RenderMessage(chatItem)
+    })
   })
   .catch(error => {console.log("error: ", error)})
 }

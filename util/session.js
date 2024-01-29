@@ -10,6 +10,7 @@ const { convertUserMapToArrays } = require("../hooks/array.js")
  * 
  */
  
+//This.sessions uses the user's id as the key 
 class SessionStore{
   constructor(){
     this.sessions = new Map(); 
@@ -112,6 +113,39 @@ class SessionStore{
       arr.push(obj)
     })
     return arr; 
+  }
+
+  //this function takes a Set of user id's and creates an array of user info corresponding to the id's 
+  //setObj: Set
+  convertIdSetToArrayOfUsers(setObj){
+    try{
+      var arr = []; 
+      setObj.forEach(item =>{
+        if(this.sessions.has(item)){
+          arr.push(this.sessions.get(item))
+        }
+      })
+
+      return arr; 
+    } catch(e){console.log(`convertIdSetToArrayOfUsers error: ${e}`)}
+  }
+
+  //Takes the members array from a MessageStorage instance and returns an array of online users; 
+  FormatArrayOfUsers(OnlineUsers){
+    try{
+      var arr = OnlineUsers.map(item =>{
+          var user = this.sessions.get(item.id);
+          if(item.in_chat_room){
+              return {
+                username: user.username, 
+                id: user.id,
+                socketId: user.socketId,  
+              }
+          }
+          return null; 
+      })
+      return arr; 
+    } catch(e){console.log(`convertIdSetToArrayOfUsers error: ${e}`)}
   }
 }
 
