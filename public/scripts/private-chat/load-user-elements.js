@@ -156,8 +156,8 @@ const removeUserTypingNote = (ID) => {
   serverMessage.removeChild(removeNode);
 };
 
+//Session info has not been populated yet, but that shouldn't matter. 
 socket.on(`update-list-in-room-${roomKey}`, (UsersInChat) => {
-  console.log("UsersInChat: ", UsersInChat)
   UserList.innerHTML = "";
   serverMessage.innerHTML = "";
   UsersInChat.forEach((user) => {

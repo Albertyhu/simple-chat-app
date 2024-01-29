@@ -1,5 +1,8 @@
 const { convertUserMapToArrays } = require("../hooks/array.js")
 
+//it makes no sense to store socket id here because if the user is in multiple rooms at the same  time, he may have
+//different socket id's.
+//What complicates this even more is that sometimes the user has the same socket ids in two rooms. 
 /**
  * type session ={
  *  id: string, 
@@ -130,19 +133,19 @@ class SessionStore{
     } catch(e){console.log(`convertIdSetToArrayOfUsers error: ${e}`)}
   }
 
-  //Takes the members array from a MessageStorage instance and returns an array of online users; 
   FormatArrayOfUsers(OnlineUsers){
     try{
-      var arr = OnlineUsers.map(item =>{
+      var arr = []
+      OnlineUsers.forEach(item =>{
           var user = this.sessions.get(item.id);
           if(item.in_chat_room){
-              return {
+            const onlineUser = {
                 username: user.username, 
                 id: user.id,
                 socketId: user.socketId,  
               }
+            arr.push(onlineUser)
           }
-          return null; 
       })
       return arr; 
     } catch(e){console.log(`convertIdSetToArrayOfUsers error: ${e}`)}

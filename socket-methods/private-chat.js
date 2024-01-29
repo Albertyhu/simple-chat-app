@@ -47,7 +47,7 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
    * }
   */
   socket.on("joined-private-chat", (event)=>{
-    console.log("event: ", event)
+  console.log("received joined private chat: ", socket.id)
     const chatItem = {
       username: null, 
       msg: `${event.username} has joined the private chat room.`, 
@@ -68,7 +68,7 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
 
     var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(event.roomKey)); 
     console.log("UsersInChat: ", UsersInChat)
-    socket.emit(`update-list-in-room-${event.roomKey}`, UsersInChat);  
+    io.emit(`update-list-in-room-${event.roomKey}`, UsersInChat);  
   })  
 }
 

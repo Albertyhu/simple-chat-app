@@ -58,7 +58,6 @@ const AddUserInPrivateChat = (req, res) =>{
     } catch(e){
         return res.status(500).json({error: e})
     }
-    console.log("chatHistory: ", chatHistory)
     return res.status(200).json({sessionInfo: session, message: chatHistory})
 }
 

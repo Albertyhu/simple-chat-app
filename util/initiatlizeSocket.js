@@ -3,6 +3,7 @@ const { SessionStore} = require("./session.js");
 const {MessageStorage} = require("./messageStore.js"); 
 const {
   ReceiveNewUser, 
+  DisconnectEvent, 
 } = require("../socket-methods/auth.js"); 
 const {
   ReceiveInvite, 
@@ -70,27 +71,29 @@ io.on("connection", (socket) => {
     io.emit("remove from list", userID);
   });
 
-  socket.on("disconnect", async () => {
-    //var userN = getNameById(socket.id, onlineUsers);
-    var disconnecting_session = ExistingSession.findSessionBySocketId(socket.id)
-    var userN = disconnecting_session?.username; 
-    var userId = disconnecting_session?.id; 
+  DisconnectEvent({io, socket, ExistingSession})
 
-    var chatItem = { username: "", msg: `${userN} disconnected from chat` };
-    io.emit("chat message", chatItem);
-    var newUserMap = convertUserMapToArray(onlineUsers);
+  // socket.on("disconnect", async () => {
+  //   //var userN = getNameById(socket.id, onlineUsers);
+  //   var disconnecting_session = ExistingSession.findSessionBySocketId(socket.id)
+  //   var userN = disconnecting_session?.username; 
+  //   var userId = disconnecting_session?.id; 
 
-    //needs code to check if user is disconnected from all existing chat rooms; 
-    const matchingSockets = await io.in(socket.id).allSockets();
-    //console.log("matchingSockets: ", matchingSockets) 
-    const isDisconnected = matchingSockets.size === 0;
-    // let SessionId = socket.request.session.instance.id; 
-    if(matchingSockets.size === 0 && disconnecting_session){
-      ExistingSession.updateOnlineStatus(userId, false);
-      var newUserMap = ExistingSession.returnAllSessionsAsArray(); 
-      io.emit("update user list", newUserMap);
-    }
-  });
+  //   var chatItem = { username: "", msg: `${userN} disconnected from chat` };
+  //   io.emit("chat message", chatItem);
+  //   var newUserMap = convertUserMapToArray(onlineUsers);
+
+  //   //needs code to check if user is disconnected from all existing chat rooms; 
+  //   const matchingSockets = await io.in(socket.id).allSockets();
+  //   //console.log("matchingSockets: ", matchingSockets) 
+  //   const isDisconnected = matchingSockets.size === 0;
+  //   // let SessionId = socket.request.session.instance.id; 
+  //   if(matchingSockets.size === 0 && disconnecting_session){
+  //     ExistingSession.updateOnlineStatus(userId, false);
+  //     var newUserMap = ExistingSession.returnAllSessionsAsArray(); 
+  //     io.emit("update user list", newUserMap);
+  //   }
+  // });
 
   //when a user is typing
   socket.on("user is typing", (userId) => {

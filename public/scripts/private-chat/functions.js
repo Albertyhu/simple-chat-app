@@ -100,8 +100,6 @@ const AuthenticateUsername = async (userN, roomKey) =>{
       LoginForm.classList.add("closeForm");
     AddUserElem(sessionInfo.username);
     //save session info in client side 
-    Session.saveSessionInfo(sessionInfo.username, sessionInfo.id, true)
-
     socket.emit("user info received", sessionInfo)
     socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})
     message.forEach(chatItem =>{
