@@ -7,7 +7,11 @@ const {
     messageStore,
     ExistingSession  
 } = require("../util/initiatlizeSocket.js"); 
+const { 
+  MAIN_ROOM
+} = require("../config/constants.js")
 
+//Adds user to public chat
 //This is sends the necessary information to the client to render the page
 const AddUser = (req, res, next) =>{
     const {username} = req.body; 
@@ -22,6 +26,7 @@ const AddUser = (req, res, next) =>{
             connected: true, 
         }
         ExistingSession.saveSession(newId, session)
+        messageStore.addUserToRoom(MAIN_ROOM, newId, true)
     }
     return res.status(200).json(session)
 }

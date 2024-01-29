@@ -2,11 +2,11 @@ const { v4: uuidv4 } = require("uuid");
 const { SessionStore} = require("./session.js"); 
 const {MessageStorage} = require("./messageStore.js"); 
 const {
-  ReceiveNewUser, 
   DisconnectEvent, 
 } = require("../socket-methods/auth.js"); 
 const {
   ReceiveInvite, 
+  ReceiveAcceptanceToInvite, 
   ReceiveJoinedPrivateChat, 
   ReceivePrivateChat,
   ReceiveTypingInPrivateChat, 
@@ -16,100 +16,50 @@ const {
   SessionMiddleware, 
   wrap, 
  } = require("../middlewares/sessionMiddleware.js")
+const PublicSocketMethods = require("../socket-methods/public-chat.js")
+const { 
+  MAIN_ROOM
+} = require("../config/constants.js")
 
-const {
-  convertUserMapToArray,
-  removeFromMap,
-  getNameById,
-  createArrayOfUsers,
-  isUsernameUnique,
-} = require("../hooks/array.js");    
-const {
-    genKey
-} = require("../hooks/string.js") 
 
 const ExistingSession = new SessionStore(); 
 const messageStore = new MessageStorage(); 
-
 var onlineUsers = new Map(); 
+//create message storage with an empty arraya and "PUBLIC" as the key
 
 const InitializeSocket = (io) =>{
-
+messageStore.createStorage(MAIN_ROOM, [])
 //The wrap middleware serves the purpose of making express-session work with socket.io 
 io.use(wrap(SessionMiddleware)); 
-io.use((socket, next)=>{
-  const sessionID = socket.request.session.instance; 
 
-  if (sessionID) {
-    // find existing session
-    const session = ExistingSession.findSession(sessionID);
-    if (session) {
-      socket.sessionID = sessionID;
-      socket.userID = session.userID;
-      socket.username = session.username;
-      return next();
-    }
-  }
-  socket.sessionID = uuidv4();
-  socket.userID = uuidv4();  
-  next();  
-})
+io.on("connection", (socket) => {   
+const {
+    ReceiveNewPublicUser,
+    ReceivePublicChatMess, 
+    PublicUserTyping, 
+    PublicNoLongerTyping
+} = PublicSocketMethods({MAIN_ROOM, io, socket, ExistingSession, messageStore})
+  //Add new user to the chat when he joins 
+  ReceiveNewPublicUser(); 
 
-io.on("connection", (socket) => {
-  var userMap = ExistingSession.returnAllSessionsAsArray();
-  //io.emit("update user list", userMap);
-  
-  socket.on("chat message", (message) => {
-    io.emit("chat message", message); 
-  });
+  //handles submitting chat message to public room  
+  ReceivePublicChatMess(); 
 
-  ReceiveNewUser({io, socket, ExistingSession}); 
+  //broadcasts notice that a user is typing 
+  PublicUserTyping();  
 
-  socket.on("remove user", (userRemoved) => {
-    var userID = onlineUsers.get(userRemoved);
-    onlineUsers.delete(userRemoved);
-    io.emit("remove from list", userID);
-  });
+  //broadcasts notice that a user is no longer typing 
+  PublicNoLongerTyping(); 
 
+  //Handles tasks when a user disconnects 
   DisconnectEvent({io, socket, ExistingSession})
 
-  // socket.on("disconnect", async () => {
-  //   //var userN = getNameById(socket.id, onlineUsers);
-  //   var disconnecting_session = ExistingSession.findSessionBySocketId(socket.id)
-  //   var userN = disconnecting_session?.username; 
-  //   var userId = disconnecting_session?.id; 
-
-  //   var chatItem = { username: "", msg: `${userN} disconnected from chat` };
-  //   io.emit("chat message", chatItem);
-  //   var newUserMap = convertUserMapToArray(onlineUsers);
-
-  //   //needs code to check if user is disconnected from all existing chat rooms; 
-  //   const matchingSockets = await io.in(socket.id).allSockets();
-  //   //console.log("matchingSockets: ", matchingSockets) 
-  //   const isDisconnected = matchingSockets.size === 0;
-  //   // let SessionId = socket.request.session.instance.id; 
-  //   if(matchingSockets.size === 0 && disconnecting_session){
-  //     ExistingSession.updateOnlineStatus(userId, false);
-  //     var newUserMap = ExistingSession.returnAllSessionsAsArray(); 
-  //     io.emit("update user list", newUserMap);
-  //   }
-  // });
-
-  //when a user is typing
-  socket.on("user is typing", (userId) => {
-    io.emit("user is typing", userId);
-  });
-  socket.on("no longer typing", (userId) => {
-    io.emit("no longer typing", userId);
-  });
-  
   //when a user sends an invite for a private chat to another
   ReceiveInvite({io, socket, ExistingSession, messageStore}); 
 
-  socket.on("accept-private-chat-invite", (roomKey)=>{
-    socket.join(`room-${roomKey}`)
-  })
-
+  //when a user accepts an invite
+  ReceiveAcceptanceToInvite({socket})
+  
   //when people join a private chat
   ReceiveJoinedPrivateChat({io, socket, ExistingSession, messageStore})
 

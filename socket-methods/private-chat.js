@@ -37,6 +37,12 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
   });
 }
 
+const ReceiveAcceptanceToInvite = ({socket})=>{
+  socket.on("accept-private-chat-invite", (roomKey)=>{
+    socket.join(`room-${roomKey}`)
+  })  
+}
+
 //The reason that private doesn't work after a user refreshes is because roomKey originates from the client is not saved in server
 const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>{
   //notifies the server when a user joins a private chat room
@@ -47,7 +53,6 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
    * }
   */
   socket.on("joined-private-chat", (event)=>{
-  console.log("received joined private chat: ", socket.id)
     const chatItem = {
       username: null, 
       msg: `${event.username} has joined the private chat room.`, 
@@ -67,7 +72,6 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
     //updates the number of users in the chat room; 
 
     var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(event.roomKey)); 
-    console.log("UsersInChat: ", UsersInChat)
     io.emit(`update-list-in-room-${event.roomKey}`, UsersInChat);  
   })  
 }
@@ -83,6 +87,7 @@ const ReceivePrivateChat =({io, socket, messageStore})=>{
       date, 
     } = event; 
     io.emit(`room-${roomKey}`, event)
+    console.log("date: ", date)
     messageStore.saveMessages(roomKey, username, id, msg, date)
   })
 }
@@ -110,6 +115,7 @@ const ReceiveStopTypingInPrivateChat = ({io, socket}) =>{
 
 module.exports = {
     ReceiveInvite, 
+    ReceiveAcceptanceToInvite, 
     ReceiveJoinedPrivateChat,
     ReceivePrivateChat, 
     ReceiveTypingInPrivateChat, 

@@ -27,7 +27,7 @@ socket.on("chat message", (chatItem) => {
     user_name.classList.add("usernameStyle");
     divElement.append(user_name);
 
-    var dateObj = new Date();
+    var dateObj = new Date(chatItem.timeSubmitted);
 
     var time = document.createElement("p");
     time.innerText = dateObj;

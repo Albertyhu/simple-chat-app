@@ -1,6 +1,12 @@
 const { v4: uuidv4 } = require("uuid")
 const { CompareArrays } = require("../hooks/array.js")
 /**
+ * MessageStorage is responsible for storing all instances of a chat thread.
+ * Every room is considered a unique chat thread.
+ * It records all the messages that were posted in a chat room. 
+ */
+
+/**
  * type storage = {
  * messages: Array<MessageInstance>
  * members: Array<string>
@@ -17,23 +23,17 @@ const { CompareArrays } = require("../hooks/array.js")
  * }
  */
 
-const sample = {
-    username: "Antsmasher",
-    authorId: "3433dvsdsdf", 
-    msg: "test",
-    time: new Date(), 
-}
 /**
  * type MembersObj ={
- * username: string, 
+ * id: string, 
  * in_chat_room: boolean, 
  * }
  * 
  */
-function CreateMembersObj(id){
+function CreateMembersObj(id, status){
     return {
         id, 
-        in_chat_room: false, 
+        in_chat_room: status, 
     }
 }
 
@@ -44,8 +44,8 @@ class MessageStorage {
     }
     //creates a new storage value with given memebers and roomKey 
     createStorage(roomKey, members){
-        var membersArr = members.map(id =>{
-            return CreateMembersObj(id); 
+        let membersArr = members.map(id =>{
+            return CreateMembersObj(id, false); 
         })
         const newStorage = {
             members: membersArr, 
@@ -54,10 +54,10 @@ class MessageStorage {
         this.storage.set(roomKey, newStorage)
     }
 
-    saveMessages = (roomKey, username, authorId, msg, time) =>{ 
-        var messages = []; 
-        var members = []; 
-        var r_key = roomKey;
+    saveMessages = (roomKey, username, authorId, msg, date) =>{ 
+        let messages = []; 
+        let members = []; 
+        let r_key = roomKey;
         if(this.storage.has(roomKey)){
             const storage = this.storage.get(roomKey);
             members =  storage.members; 
@@ -66,14 +66,12 @@ class MessageStorage {
         else{
             throw new Error(`Chat ${roomKey} doesn't exist.`)
         }
-        messages.push({username, authorId, msg, time}); 
+        messages.push({username, authorId, msg, date}); 
         const updatedStorage ={
             members,
             messages, 
         }
         this.storage.set(r_key, updatedStorage)
-        // console.log("chat exist: ", this.storage.has(roomKey))
-        // console.log("storage: ", this.storage)
     }
 
     getChatHistoryById = (roomKey) =>{
@@ -94,9 +92,9 @@ class MessageStorage {
         return this.storage; 
     }
     getMessagesByAuthorId = (authorId) =>{
-        var messArr = []; 
+        let messArr = []; 
         this.storage.forEach(store =>{
-            var arrInstance = store.messages.filter(message => message.authorId === authorId)
+            let arrInstance = store.messages.filter(message => message.authorId === authorId)
             messArr = messArr.concat(arrInstance); 
         })
         return messArr; 
@@ -108,23 +106,53 @@ class MessageStorage {
         this.storage.clear(); 
     }
     doesChatAlreadyExist(members){
-        var foundKey = null; 
+        let foundKey = null; 
         this.storage.forEach((store, key) =>{
             if(CompareArrays(store.members, members))
                 foundKey = key; 
         })
         return foundKey; 
     }
+    //finds out if a user is a member of the room 
+    isMember(userId, roomKey){
+        let found = false; 
+        try{
+            let storage = this.storage.get(roomKey); 
+            if(storage){
+                found = storage.members.some(user => user.id === userId)
+                return found
+            }
+            else{
+                throw new Error("There is no room that has the roomKey: " + roomKey)
+            }
+
+        } catch(e){console.error(`isUserInRoom error: ${e}`)}
+        return found
+    }
+
     //returns array of members of a chat room
     getUserFromRoom(roomKey){
         try{
-        var storage = this.storage.get(roomKey)
+        let storage = this.storage.get(roomKey)
         return storage.members; 
         }catch(e){console.log(`getUserFromRoom error: ${e}`)}
 
     }
+    addUserToRoom(roomKey, userId, status){
+        //first check if the userId already exist
+        try{
+            if(this.isMember(userId, roomKey)){
+                let storage = this.storage.get(roomKey)
+                //add new member to array
+                storage.members.push(CreateMembersObj(userId, status))
+                //update info
+                this.storage.set(roomKey, storage)
+            }
+        } catch(e){console.log(`addUserToRoom error: ${e}`)}
+
+    }
     updateUserStatus(roomKey, id, status){
-         var updatedArr = this.storage.get(roomKey).members.map(user =>{
+         let updatedArr = this.storage.get(roomKey).members.map(user =>{
             if(id === user.id){
                 user.in_chat_room = status
             }

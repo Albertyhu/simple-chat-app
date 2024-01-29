@@ -108,7 +108,6 @@ socket.on("update user list", (userList) => {
   OnlineUsers = userList;
   UserList.innerHTML = "";
   serverMessage.innerHTML = "";
-  console.log("user list: ", userList)
   userList.forEach((user) => {
     if(user.connected){
       AddUserToList(user.username, user.id);

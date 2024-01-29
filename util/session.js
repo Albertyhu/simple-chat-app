@@ -1,6 +1,10 @@
 const { convertUserMapToArrays } = require("../hooks/array.js")
 
-//it makes no sense to store socket id here because if the user is in multiple rooms at the same  time, he may have
+/**
+ * SessionStore keeps track of all info about the current users of the chat app including whether or not they are online.
+ */
+
+//Note: it makes no sense to store socket id here because if the user is in multiple rooms at the same  time, he may have
 //different socket id's.
 //What complicates this even more is that sometimes the user has the same socket ids in two rooms. 
 /**
@@ -8,7 +12,6 @@ const { convertUserMapToArrays } = require("../hooks/array.js")
  *  id: string, 
  *  username: string, 
  *  connected: boolean, 
- *  socketId: string, 
  * }
  * 
  */

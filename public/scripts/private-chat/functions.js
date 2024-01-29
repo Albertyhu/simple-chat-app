@@ -62,7 +62,7 @@ const RenderMessage = (chatItem)=>{
     user_name.innerText = chatItem.username;
     user_name.classList.add("usernameStyle");
     divElement.append(user_name);
-
+    console.log("chatItem: ", chatItem)
     var time = document.createElement("p"); 
     time.innerText = new Date(chatItem.date); 
     time.style.fontStyle = "italic";
