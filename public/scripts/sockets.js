@@ -13,6 +13,7 @@ socket.on("user-disconnected", (event)=>{
       msg: message, 
       username: '',
     }
+  console.log("UserInChat: ", UsersInChat)
   RenderAllUserElements(UsersInChat); 
   RenderChatMessage(chatItem); 
 })

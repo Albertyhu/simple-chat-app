@@ -24,7 +24,7 @@ const RenderChatMessage = (chatItem) =>{
       var dateObj = new Date(chatItem.timeSubmitted);
       var time = document.createElement("p");
       time.innerText = dateObj;
-      time.style.fontStyle = "italic";
+      time.style.fontStyle = "italic"; 
       divElement.append(time);
       item.append(divElement);
     }

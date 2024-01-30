@@ -1,3 +1,9 @@
+1/30/24
+Need to work on:
+1. Online user list on the menu for both public and private 
+2. private disconnect message
+3. If the user joins a room, his status needs to be updated as online
+
 1/29/24
 There is a flaw with how online users list is rendered in each room.
 It's based on the user's connected status. 

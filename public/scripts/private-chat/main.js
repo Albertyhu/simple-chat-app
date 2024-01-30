@@ -34,14 +34,3 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-socket.on(`room-${roomKey}-chat-history`, (chatHistory)=>{
-  console.log('chatHistory.size: ', chatHistory.length)
-  if(chatHistory != null && chatHistory != undefined){
-    chatHistory.forEach(item => {RenderMessage(item)})
-  }
-})
-
-socket.on(Room, (chatItem) => {
-  RenderMessage(chatItem)
-  window.scrollTo(0, document.body.scrollHeight);
-});

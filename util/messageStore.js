@@ -33,7 +33,7 @@ const { CompareArrays } = require("../hooks/array.js")
  */
 
 //in_chat_room is obsolet. Use socketIds to determine if user is still in chat room. 
-function CreateMembersObj(id, socketId, status){
+function CreateMembersObj(id, socketId, status){ 
     const socketIds = new Set();
     socketIds.add(socketId)
     return {
@@ -178,9 +178,9 @@ class MessageStorage {
     }
     saveUserSocket(roomKey, userId, socketId){
         try {
-            let storageInstance = this.storage.get(roomKey)
+            let storageInstance = this.storage.get(roomKey) 
             if(storageInstance){
-                let updatedMembers = storageInstance.members.map(user =>{
+                let updatedMembers = storageInstance.members.map(user =>{ 
                     if(user.id === userId){
                         if(!user.socketIds){
                             user.socketIds = new Set(); 
@@ -192,12 +192,12 @@ class MessageStorage {
                 this.storage.set(roomKey, {...storageInstance, members: updatedMembers })
             }
         } catch(e){
-            console.log(`saveUserSocketerror: ${e}`)
+            console.log(`saveUserSocketerror: ${e}`) 
         }
     }
     removeUserSocket(roomKey, userId, socketId){
         try { 
-            let storageInstance = this.storage.get(roomKey)
+            let storageInstance = this.storage.get(roomKey) 
             if(storageInstance){
                 let updatedMembers = storageInstance.members.map(user =>{
                     if(user.id === userId && user.socketIds){
@@ -260,42 +260,47 @@ class MessageStorage {
             console.log("disconnecting socketid: ", socketId)
             const {foundKey, foundMemberKey} = this.getKeyAndMemberInstanceBySocket(socketId)
             if(foundKey){
+                console.log("foundKey: ", foundKey)
                 let storageInstance = this.storage.get(foundKey); 
                 let updatedMembers = storageInstance.members;
-                console.log("before updatedMembers: ", updatedMembers)
                 //get user id  
                 const userId= updatedMembers[foundMemberKey].id
-                console.log("userId: ", userId)
                 //remove socket id from Set
                 updatedMembers[foundMemberKey].socketIds.delete(socketId); 
                 //update Storage Map
                 this.storage.set(foundKey, {messages: storageInstance.messages, members: updatedMembers})
                 //broadcast message if the user no longer has socket id's in the room 
-                console.log("Updated members: ", this.storage.get(foundKey).members)
                 if(updatedMembers[foundMemberKey].socketIds.size <= 0){
                     //update list of online uers's in chat room 
-                    var UsersInChat = this.getAllOnlineUsersFromRoom(foundKey) || []; 
+                    //The UsersInChat only contains the id's of the users, but not their usernames 
+                    let UsersInChat = this.getAllOnlineUsersFromRoom(foundKey) || []; 
+
+                    UsersInChat = UsersInChat.map(item =>{
+                        var userN = ExistingSession.getName(item.id)
+                        return{...item, username: userN}
+                    })
                     console.log("UsersInChat: ", UsersInChat)    
 
                     //update user's online status in chat room 
                     let disconnect_message = `${ExistingSession.getName(userId)} left chat`; 
-                    
                     //broadcast
-                    //io.to(`room-${foundKey}`).emit("user-disconnected", {message: disconnect_message, UsersInChat})
-                    if(foundKey === 'PUBLIC'){
-                        io.emit("user-disconnected", {message: disconnect_message, UsersInChat})
+                    if(foundKey === 'PUBLIC'){ 
+                        io.emit("user-disconnected", {message: disconnect_message, UsersInChat})  
                     }
-                    io.emit(`user-disconnected-room-${foundKey}`, {message: disconnect_message, UsersInChat})
-
+                    else{
+                        //io.emit(`user-disconnected-room-${foundKey}`, {message: disconnect_message, UsersInChat})
+                        io.emit(`user-disconnected-${foundKey}`, {message: disconnect_message, UsersInChat})
+                    }
                     //update user's status depending on whether or not he's in any chat room. 
                     if(!this.isUserOnline(userId)){
                         console.log("update online status to offline \n")
                         ExistingSession.updateOnlineStatus(userId, false)  
                     }
                 }
+                console.log("\n")
             }
             else{
-                throw new Error(`socket.id ${socket.id} doesn't exist. \n`)
+                throw new Error(`socket.id ${socket.id} doesn't exist. \n`) 
             }
         } catch(e){console.log(`disconnectMessage ${e}`)}
     }

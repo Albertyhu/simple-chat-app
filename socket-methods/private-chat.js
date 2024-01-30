@@ -24,10 +24,10 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
       invite.messages = messageStore.getChatHistoryById(foundKey)
     }
     else{
-      messageStore.createStorage(roomKey, membersArr)
+      messageStore.createStorage(roomKey, [])
     }
     socket.join(`room-${room_key}`)
-
+    console.log("receive invite messageStore keys: ", messageStore.storage.keys())
     var inviteeSocket = ExistingSession.getUserSocketId(invitee);     
     //The variable 'invitee' is the socket id that is unique to the user.
     socket.to(inviteeSocket).emit(`invited-to-chat`, invite);
@@ -60,7 +60,7 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
       username: null, 
       msg: `${username} has joined the private chat room.`, 
       roomKey: roomKey, 
-      authorSocketId: socket.id,       
+      socketId: socket.id,       
     }
     //send chat history to client 
     //This is flawed because the client may not be ready to receive the broadcasted message. 
@@ -69,12 +69,13 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
       socket.to(socket.id).emit(`room-${roomKey}-chat-history`, chatHistory)
     }
     //broadcast message to the chat room 
-    socket.emit(`room-${roomKey}`, chatItem)
-    messageStore.updateUserStatus(roomKey, id, true);
+    io.emit(`room-${roomKey}`, chatItem)
+    //add user to storage
+    messageStore.addUserToRoom(roomKey, id, socket.id, true)
+    ///messageStore.updateUserStatus(roomKey, id, true);
     //updates the number of users in the chat room; 
-
     printSocketRooms(socket, username)
-    messageStore.saveUserSocket(socket.id, id, socket.id)
+    messageStore.saveUserSocket(roomKey, id, socket.id)
     var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
     io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })  

@@ -113,9 +113,7 @@ const RenderAllUserElements = (userList) =>{
     UserList.innerHTML = "";
     serverMessage.innerHTML = "";
     userList.forEach((user) => {
-      if(user.connected){
-        AddUserToList(user.username, user.id);
-        addUserTypingNote(user.username, user.id);
-        }
+      AddUserToList(user.username, user.id);
+      addUserTypingNote(user.username, user.id);
     });  
 }

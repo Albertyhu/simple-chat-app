@@ -12,11 +12,6 @@ const UserLogOff = ({io, socket, ExistingSession}) =>{
 //The information will be stored in MessageStorage 
 const DisconnectEvent = ({io, socket, ExistingSession, messageStore}) =>{
  socket.on("disconnect", () => {
-    // var disconnecting_session = ExistingSession.findSessionBySocketId(socket.id)
-    // var userN = disconnecting_session?.username; 
-    // var userId = disconnecting_session?.id; 
-    // var chatItem = { username: "", msg: `${userN} disconnected from chat` };
-    // io.emit("chat message", chatItem);
     messageStore.disconnectMessage(io, socket, ExistingSession)
   });  
 }
