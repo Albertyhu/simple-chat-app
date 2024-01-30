@@ -7,12 +7,13 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
     //It will also broadcast instructions for the client to update their list of online users. 
     const ReceiveNewPublicUser = () =>{
         socket.on("user info received", (newUser) => {
-            const chatItem = {
+            const chatItem = { 
             username: "", 
-            msg: `${newUser.username} has joined the chat. `
+            msg: `${newUser.username} has joined the chat. ` 
             }
-            io.emit("chat message", chatItem)
-            printSocketRooms(socket, newUser.username)
+            io.emit("chat message", chatItem) 
+
+            printSocketRooms(socket, newUser.username) 
             //add user to storage
             messageStore.addUserToRoom(MAIN_ROOM, newUser.id, socket.id, true)
             //add socket 
@@ -43,7 +44,7 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
     }
     const PublicUserTyping = () =>{
         //when a user is typing
-        socket.on("user is typing", (userId) => {
+        socket.on("user is typing", (userId) => { 
             io.emit("user is typing", userId);
         });
     }
@@ -52,6 +53,7 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             io.emit("no longer typing", userId);
         });
     }
+
     return {
         ReceiveNewPublicUser , 
         ReceivePublicChatMess, 

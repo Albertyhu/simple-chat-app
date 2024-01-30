@@ -60,7 +60,7 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
       username: null, 
       msg: `${username} has joined the private chat room.`, 
       roomKey: roomKey, 
-      authorSocketId: socket.id,      
+      authorSocketId: socket.id,       
     }
     //send chat history to client 
     //This is flawed because the client may not be ready to receive the broadcasted message. 

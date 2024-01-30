@@ -148,7 +148,6 @@ class MessageStorage {
     getAllOnlineUsersFromRoom(roomKey){
         try{
             let storageInstance = this.storage.get(roomKey); 
-            console.log("storageInstance.members: ", storageInstance.members)
             return storageInstance.members.filter(member=>member.socketIds.size > 0)
         } catch(e){
             console.log(`getAllOnlineUsersFromRoom error: ${e}`)
@@ -263,28 +262,35 @@ class MessageStorage {
             if(foundKey){
                 let storageInstance = this.storage.get(foundKey); 
                 let updatedMembers = storageInstance.members;
-                //get user id 
+                console.log("before updatedMembers: ", updatedMembers)
+                //get user id  
                 const userId= updatedMembers[foundMemberKey].id
+                console.log("userId: ", userId)
                 //remove socket id from Set
                 updatedMembers[foundMemberKey].socketIds.delete(socketId); 
                 //update Storage Map
                 this.storage.set(foundKey, {messages: storageInstance.messages, members: updatedMembers})
                 //broadcast message if the user no longer has socket id's in the room 
+                console.log("Updated members: ", this.storage.get(foundKey).members)
                 if(updatedMembers[foundMemberKey].socketIds.size <= 0){
                     //update list of online uers's in chat room 
                     var UsersInChat = this.getAllOnlineUsersFromRoom(foundKey) || []; 
+                    console.log("UsersInChat: ", UsersInChat)    
+
                     //update user's online status in chat room 
                     let disconnect_message = `${ExistingSession.getName(userId)} left chat`; 
-
-                    io.to(`room-${foundKey}`).emit("user-disconnected", {message: disconnect_message, UserInChat})
-
-
-
-                   // io.emit(`update-list-in-room-${foundKey}`, UsersInChat); 
+                    
+                    //broadcast
+                    //io.to(`room-${foundKey}`).emit("user-disconnected", {message: disconnect_message, UsersInChat})
+                    if(foundKey === 'PUBLIC'){
+                        io.emit("user-disconnected", {message: disconnect_message, UsersInChat})
+                    }
+                    io.emit(`user-disconnected-room-${foundKey}`, {message: disconnect_message, UsersInChat})
 
                     //update user's status depending on whether or not he's in any chat room. 
                     if(!this.isUserOnline(userId)){
-                        ExistingSession.updateOnlineStatus(userId, false) 
+                        console.log("update online status to offline \n")
+                        ExistingSession.updateOnlineStatus(userId, false)  
                     }
                 }
             }

@@ -109,6 +109,7 @@ const removeUserTypingNote = (ID) => {
 //Renders the typing message for each user
 //This functions is used when the list of online users is updated and a re-render is necessary 
 const RenderAllUserElements = (userList) =>{
+    console.log("userList: ", userList)
     UserList.innerHTML = "";
     serverMessage.innerHTML = "";
     userList.forEach((user) => {
@@ -118,16 +119,3 @@ const RenderAllUserElements = (userList) =>{
         }
     });  
 }
-
-socket.on("update user list", (userList) => {
-  RenderAllUserElements(userList); 
-});
-
-socket.on("user-disconnected", (event)=>{
-  RenderAllUserElements(userList); 
-})
-
-socket.on("remove from list", (userId) => {
-  RemoveUserFromList(userId);
-  removeUserTypingNote(userId);
-});

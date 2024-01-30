@@ -171,16 +171,4 @@ const RenderAllUserElements = (userList) =>{
     });  
 }
 
-socket.on(`update-list-in-room-${roomKey}`, (UsersInChat) => {
-  RenderAllUserElements(UsersInChat)
-});
-
-socket.on("user-disconnected", (event)=>{
-  RenderAllUserElements(userList); 
-})
-
-socket.on("remove from list", (userId) => { 
-  RemoveUserFromList(userId);
-  removeUserTypingNote(userId);
-});
 
