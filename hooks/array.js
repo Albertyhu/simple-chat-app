@@ -74,13 +74,13 @@ const printSocketRooms = (socket, username) => {
   try{
     const rooms = Array.from(socket.rooms);
     console.log(`user: ${username}-${socket.id}`)
-    console.log(`Socket ID: ${socket.id}, Rooms: ${rooms.join(', ')}`);  
+    console.log(`Socket ID: ${socket.id}, Rooms: ${rooms.join(', ')} \n`);  
   } catch(e){console.log(`printSocketRooms error: ${e}`)}
 
 };
 
-module.exports = {
-  convertUserMapToArray,
+module.exports = { 
+  convertUserMapToArray, 
   removeFromMap,
   getNameById,
   createArrayOfUsers, 

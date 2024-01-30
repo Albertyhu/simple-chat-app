@@ -7,7 +7,7 @@ const { convertUserMapToArrays } = require("../hooks/array.js")
 //Note: it makes no sense to store socket id here because if the user is in multiple rooms at the same  time, he may have
 //different socket id's.
 //What complicates this even more is that sometimes the user has the same socket ids in two rooms. 
-/**
+/** 
  * type session ={
  *  id: string, 
  *  username: string, 
@@ -28,9 +28,9 @@ class SessionStore{
     var session = this.sessions.get(id);
     session.socketId = newSocketID; 
     this.sessions.set(id, session)
-  }
+  } 
   getUserSocketId(id){
-    var session = this.sessions.get(id)
+    var session = this.sessions.get(id) 
     return session.socketId; 
   }
   findSessionByName(username){
@@ -63,7 +63,7 @@ class SessionStore{
     }catch(e){console.log("error: ", e)}
   }
   getName(id){
-    return this.sessions.find(id).username
+    return this.sessions.get(id).username
   }
   getNameBySocketId(socketId){
     let name = null;

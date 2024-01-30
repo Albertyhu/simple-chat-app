@@ -24,11 +24,12 @@ const {
 
 const ExistingSession = new SessionStore(); 
 const messageStore = new MessageStorage(); 
-var onlineUsers = new Map(); 
+
 //create message storage with an empty arraya and "PUBLIC" as the key
 
 const InitializeSocket = (io) =>{
 messageStore.createStorage(MAIN_ROOM, [])
+
 //The wrap middleware serves the purpose of making express-session work with socket.io 
 io.use(wrap(SessionMiddleware)); 
 

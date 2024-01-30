@@ -25,8 +25,8 @@ const AddUser = (req, res, next) =>{
             username,  
             connected: true, 
         }
-        ExistingSession.saveSession(newId, session)
-        messageStore.addUserToRoom(MAIN_ROOM, newId, true)
+        ExistingSession.saveSession(newId, session) 
+       // messageStore.addUserToRoom(MAIN_ROOM, newId, true)
     }
     return res.status(200).json(session)
 }

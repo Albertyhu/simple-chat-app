@@ -12,9 +12,11 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             msg: `${newUser.username} has joined the chat. `
             }
             io.emit("chat message", chatItem)
-
             printSocketRooms(socket, newUser.username)
-            messageStore.saveUserSocket(MAIN_ROOM, newUser.id, socket.id)
+            //add user to storage
+            messageStore.addUserToRoom(MAIN_ROOM, newUser.id, socket.id, true)
+            //add socket 
+            //messageStore.saveUserSocket(MAIN_ROOM, newUser.id, socket.id)
             //save User's socket id to the system
             ExistingSession.updateUserSocketId(newUser.id, socket.id)
             UpdateClientOnlineList({io, ExistingSession})

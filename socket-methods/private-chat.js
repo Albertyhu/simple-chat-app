@@ -28,7 +28,6 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
     }
     socket.join(`room-${room_key}`)
 
-    //console.log("sent invite: ", room_key)
     var inviteeSocket = ExistingSession.getUserSocketId(invitee);     
     //The variable 'invitee' is the socket id that is unique to the user.
     socket.to(inviteeSocket).emit(`invited-to-chat`, invite);

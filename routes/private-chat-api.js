@@ -9,5 +9,4 @@ router.post("/load-user/:roomKey", AddUserInPrivateChat)
 
 router.get("/retrieve-history/:roomKey", RetrieveChat);
 
-
 module.exports = router; 

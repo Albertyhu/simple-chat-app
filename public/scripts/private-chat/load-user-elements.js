@@ -156,15 +156,28 @@ const removeUserTypingNote = (ID) => {
   serverMessage.removeChild(removeNode);
 };
 
-//Session info has not been populated yet, but that shouldn't matter. 
+//needs to be refined 
+//Renders list of online users 
+//Renders the typing message for each user
+//This functions is used when the list of online users is updated and a re-render is necessary 
+const RenderAllUserElements = (userList) =>{
+    UserList.innerHTML = "";
+    serverMessage.innerHTML = "";
+    userList.forEach((user) => {
+      if(user.connected){
+        AddUserToList(user.username, user.id);
+        addUserTypingNote(user.username, user.id);
+        }
+    });  
+}
+
 socket.on(`update-list-in-room-${roomKey}`, (UsersInChat) => {
-  UserList.innerHTML = "";
-  serverMessage.innerHTML = "";
-  UsersInChat.forEach((user) => {
-    AddUserToList(user.username, user.id);
-    addUserTypingNote(user.username, user.id);
-  });
+  RenderAllUserElements(UsersInChat)
 });
+
+socket.on("user-disconnected", (event)=>{
+  RenderAllUserElements(userList); 
+})
 
 socket.on("remove from list", (userId) => { 
   RemoveUserFromList(userId);

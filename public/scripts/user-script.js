@@ -104,17 +104,28 @@ const removeUserTypingNote = (ID) => {
   serverMessage.removeChild(removeNode);
 };
 
+//needs to be refined 
+//Renders list of online users 
+//Renders the typing message for each user
+//This functions is used when the list of online users is updated and a re-render is necessary 
+const RenderAllUserElements = (userList) =>{
+    UserList.innerHTML = "";
+    serverMessage.innerHTML = "";
+    userList.forEach((user) => {
+      if(user.connected){
+        AddUserToList(user.username, user.id);
+        addUserTypingNote(user.username, user.id);
+        }
+    });  
+}
+
 socket.on("update user list", (userList) => {
-  OnlineUsers = userList;
-  UserList.innerHTML = "";
-  serverMessage.innerHTML = "";
-  userList.forEach((user) => {
-    if(user.connected){
-      AddUserToList(user.username, user.id);
-      addUserTypingNote(user.username, user.id);
-      }
-  });
+  RenderAllUserElements(userList); 
 });
+
+socket.on("user-disconnected", (event)=>{
+  RenderAllUserElements(userList); 
+})
 
 socket.on("remove from list", (userId) => {
   RemoveUserFromList(userId);
