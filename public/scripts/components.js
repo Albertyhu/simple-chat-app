@@ -21,7 +21,7 @@ var messages = document.getElementById("messages");
 var serverMessage = document.getElementById("server_message");
 
 var localUsername = localStorage.getItem("username");
-var SessionID = localStorage.getItem("sessionID")
+var UserID = localStorage.getItem("UserID")
 let username =
   localUsername != null || localUsername != "" ? localUsername : input.value;
 let userSocketId = null;

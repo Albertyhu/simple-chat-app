@@ -30,8 +30,3 @@ if (!localUsername) {
     }
   });
 }
-
-if(SessionID){
-  socket.auth = {sessionID: SessionID}
-  socket.connect(); 
-}

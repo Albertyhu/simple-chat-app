@@ -1,0 +1,4 @@
+1/29/24
+There is a flaw with how online users list is rendered in each room.
+It's based on the user's connected status. 
+It should be based on the number of socket id's that the users has. 

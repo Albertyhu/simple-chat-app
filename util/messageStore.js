@@ -9,7 +9,7 @@ const { CompareArrays } = require("../hooks/array.js")
 /**
  * type storage = {
  * messages: Array<MessageInstance>
- * members: Array<string>
+ * members: Array<MembersObj>
  * }
  */
 
@@ -26,6 +26,7 @@ const { CompareArrays } = require("../hooks/array.js")
 /**
  * type MembersObj ={
  * id: string, 
+ * socketIds: Set<string>, 
  * in_chat_room: boolean, 
  * }
  * 
@@ -33,6 +34,7 @@ const { CompareArrays } = require("../hooks/array.js")
 function CreateMembersObj(id, status){
     return {
         id, 
+        socketIds: new Set(), 
         in_chat_room: status, 
     }
 }
@@ -117,9 +119,9 @@ class MessageStorage {
     isMember(userId, roomKey){
         let found = false; 
         try{
-            let storage = this.storage.get(roomKey); 
+            let storageInstance = this.storage.get(roomKey); 
             if(storage){
-                found = storage.members.some(user => user.id === userId)
+                found = storageInstance.members.some(user => user.id === userId)
                 return found
             }
             else{
@@ -133,20 +135,31 @@ class MessageStorage {
     //returns array of members of a chat room
     getUserFromRoom(roomKey){
         try{
-        let storage = this.storage.get(roomKey)
-        return storage.members; 
+        let storageInstance = this.storage.get(roomKey)
+        return storageInstance.members; 
         }catch(e){console.log(`getUserFromRoom error: ${e}`)}
-
     }
+
+    //Finds all online members in a room in an array. 
+    getOnlineUserFromRoom(roomKey){
+        try{
+            let storageInstance = this.storage.get(roomKey); 
+            return storageInstance.members.filter(member=>member.socketIds.size > 0)
+        } catch(e){
+            console.log(`getOnlineUserFromRoom error: ${e}`)
+            return []; 
+        }
+    }
+
     addUserToRoom(roomKey, userId, status){
         //first check if the userId already exist
         try{
             if(this.isMember(userId, roomKey)){
-                let storage = this.storage.get(roomKey)
+                let storageInstance = this.storage.get(roomKey)
                 //add new member to array
-                storage.members.push(CreateMembersObj(userId, status))
+                storageInstance.members.push(CreateMembersObj(userId, status))
                 //update info
-                this.storage.set(roomKey, storage)
+                this.storage.set(roomKey, storageInstance)
             }
         } catch(e){console.log(`addUserToRoom error: ${e}`)}
 
@@ -159,6 +172,161 @@ class MessageStorage {
             return user; 
          }); 
          this.storage.members = updatedArr; 
+    }
+    saveUserSocket(roomKey, userId, socketId){
+        try {
+            let storageInstance = this.storage.get(roomKey)
+            if(storageInstance){
+                let updatedMembers = storageInstance.members.map(user =>{
+                    if(user.id === userId){
+                        if(!user.socketIds){
+                            user.socketIds = new Set(); 
+                        }
+                        user.socketIds.add(socketId)
+                    }
+                    return user; 
+                })
+                this.storage.set(roomKey, {...storageInstance, members: updatedMembers })
+            }
+        } catch(e){
+            console.log(`saveUserSocketerror: ${e}`)
+        }
+    }
+    removeUserSocket(roomKey, userId, socketId){
+        try {
+            let storageInstance = this.storage.get(roomKey)
+            if(storageInstance){
+                let updatedMembers = storageInstance.members.map(user =>{
+                    if(user.id === userId && user.socketIds){
+                        user.socketIds.delete(socketId)
+                    }
+                    return user; 
+                })
+                this.storage.set(roomKey, {...storageInstance, members: updatedMembers })
+            }
+        } catch(e){
+            console.log(`removeUserSocket: ${e}`)
+        }
+    }
+
+    //Finds the store instance with socket id 
+    //returns the key
+    //what it should return member's username and id
+    findStoreInstanceBySocket(socketId){
+        try{
+            let foundKey = null; 
+            this.storage.forEach((item,key)=>{
+                item.members.forEach((member)=>{
+                    if(member.socketIds && member.socketIds.has(socketId)){
+                        foundKey=key; 
+                    }
+                })
+            })
+            return foundKey;
+        }catch(e){
+            console.log(`findStoreInstanceBySocket error: ${e}`)
+        }
+    }
+    getKeyAndMemberInstanceBySocket(socketId){
+        try{
+
+            let foundKey = null; 
+            let foundMemberKey = null; 
+            this.storage.forEach((item,key)=>{
+                item.members.forEach((member, memberKey)=>{
+                    if(member.socketIds && member.socketIds.has(socketId)){
+                        foundKey=key; 
+                        foundMemberKey = memberKey; 
+                    }
+                })
+            })
+            return {
+                foundKey,
+                foundMemberKey, 
+            };
+        }catch(e){
+            console.log(`findStoreInstanceBySocket error: ${e}`)
+        }
+    }
+    disconnectMessage(io, socket, ExistingSession){
+        try{
+            let socketId = socket.id; 
+            const {foundKey, foundMemberKey} = this.getKeyAndMemberInstanceBySocket(socketId)
+            if(foundKey){
+                let storageInstance = this.storage.get(foundKey); 
+                let updatedMembers = storageInstance.members;
+                //get user id 
+                const userId= updatedMembers[foundMemberKey].id
+                //remove socket id from Set
+                updatedMembers[foundMemberKey].socketIds.delete(socketId); 
+                //update Storage Map
+                this.storage.set(foundKey, {messages: storageInstance.messages, members: updatedMembers})
+                //broadcast message if the user no longer has socket id's in the room 
+                if(updatedMembers[foundMemberKey].socketIds.size <= 0){
+                    //update user's online status in chat room 
+                    io.to(`room-${foundKey}`).emit("disconnected", `${ExistingSession.getName(userId)} left chat`)
+
+                    //update list of online uers's in chat room 
+                    var UsersInChat = this.getOnlineUserFromRoom(foundKey) || []; 
+                    io.emit(`update-list-in-room-${foundKey}`, UsersInChat); 
+
+                    //update user's status depending on whether or not he's in any chat room. 
+                    if(!this.isUserOnline(userId)){
+                        ExistingSession.updateOnlineStatus(userId, false)
+                    }
+                }
+            }
+            else{
+                throw new Error(`socket.id ${socket.id} doesn't exist.`)
+            }
+        } catch(e){console.log(`disconnectMessage error: ${e}`)}
+    }
+
+    //returns Set of all keys of rooms that the user recorded to be in
+    getAllRoomsUserIsIn(userId){
+        let keySet = new Set(); 
+        try{
+            this.sessions.forEach((value,key)=>{
+                value.members.forEach(member =>{
+                    if(member.id === userId){
+                        keySet.add(key)
+                    }
+                })
+            })
+        }catch(e){console.log(`getAllRoomsUserIsIn error: ${e}`)}
+        return keySet; 
+    }
+
+    //checks to see if user is online by seeing if he has any socket.id's left 
+    isUserOnline(userId) {
+        try {
+            let keySet = this.getAllRoomsUserIsIn(userId);
+
+            for (let keyValue of keySet) {
+                let members = this.sessions.get(keyValue).members;
+
+                for (let member of members) {
+                    if (member.id === userId && member.socketIds.size > 0) {
+                        return true;
+                    }
+                }
+            }
+        } catch (e) {
+            console.log(`isUserOnline error: ${e}`);
+            return false; // Handle the error and consider the user offline
+        }
+        return false; // User not found in any session or has no socketIds
+    }
+
+    //finds out if user is in particular room by seeing if he has any socket.id's belonging to that room
+    //not used
+    isUserInRoom(roomKey, userId){
+        return this.storage.get(roomKey).members.some(member=>{
+            if(member.id === userId){
+                return member.socketIds.size > 0; 
+            }
+            return false; 
+        })
     }
 }
 

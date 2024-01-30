@@ -70,6 +70,15 @@ const CompareArrays = (arr1, arr2) =>{
   return false; 
 }
 
+const printSocketRooms = (socket, username) => {  
+  try{
+    const rooms = Array.from(socket.rooms);
+    console.log(`user: ${username}-${socket.id}`)
+    console.log(`Socket ID: ${socket.id}, Rooms: ${rooms.join(', ')}`);  
+  } catch(e){console.log(`printSocketRooms error: ${e}`)}
+
+};
+
 module.exports = {
   convertUserMapToArray,
   removeFromMap,
@@ -77,4 +86,5 @@ module.exports = {
   createArrayOfUsers, 
   isUsernameUnique,
   CompareArrays,
+  printSocketRooms
 };

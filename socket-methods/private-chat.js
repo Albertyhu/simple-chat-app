@@ -1,9 +1,5 @@
 const {
-  convertUserMapToArray,
-  removeFromMap,
-  getNameById,
-  createArrayOfUsers,
-  isUsernameUnique,
+  printSocketRooms, 
 } = require("../hooks/array.js"); 
 
 const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
@@ -31,6 +27,8 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
       messageStore.createStorage(roomKey, membersArr)
     }
     socket.join(`room-${room_key}`)
+
+    //console.log("sent invite: ", room_key)
     var inviteeSocket = ExistingSession.getUserSocketId(invitee);     
     //The variable 'invitee' is the socket id that is unique to the user.
     socket.to(inviteeSocket).emit(`invited-to-chat`, invite);
@@ -39,6 +37,7 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
 
 const ReceiveAcceptanceToInvite = ({socket})=>{
   socket.on("accept-private-chat-invite", (roomKey)=>{
+    //console.log("Received invite: ", roomKey)
     socket.join(`room-${roomKey}`)
   })  
 }
@@ -53,26 +52,32 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
    * }
   */
   socket.on("joined-private-chat", (event)=>{
+    const {
+      roomKey, 
+      username, 
+      id, 
+    } = event; 
     const chatItem = {
       username: null, 
-      msg: `${event.username} has joined the private chat room.`, 
-      roomKey: event.roomKey, 
+      msg: `${username} has joined the private chat room.`, 
+      roomKey: roomKey, 
       authorSocketId: socket.id,      
     }
     //send chat history to client 
     //This is flawed because the client may not be ready to receive the broadcasted message. 
-    var chatHistory = messageStore.getChatHistoryById(event.roomKey); 
+    var chatHistory = messageStore.getChatHistoryById(roomKey); 
     if(chatHistory){
-      socket.to(socket.id).emit(`room-${event.roomKey}-chat-history`, chatHistory)
+      socket.to(socket.id).emit(`room-${roomKey}-chat-history`, chatHistory)
     }
-
     //broadcast message to the chat room 
-    socket.emit(`room-${event.roomKey}`, chatItem)
-    messageStore.updateUserStatus(event.roomKey, event.id, true);
+    socket.emit(`room-${roomKey}`, chatItem)
+    messageStore.updateUserStatus(roomKey, id, true);
     //updates the number of users in the chat room; 
 
-    var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(event.roomKey)); 
-    io.emit(`update-list-in-room-${event.roomKey}`, UsersInChat);  
+    printSocketRooms(socket, username)
+    messageStore.saveUserSocket(socket.id, id, socket.id)
+    var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
+    io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })  
 }
 
@@ -87,7 +92,6 @@ const ReceivePrivateChat =({io, socket, messageStore})=>{
       date, 
     } = event; 
     io.emit(`room-${roomKey}`, event)
-    console.log("date: ", date)
     messageStore.saveMessages(roomKey, username, id, msg, date)
   })
 }

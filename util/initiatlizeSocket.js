@@ -52,7 +52,7 @@ const {
   PublicNoLongerTyping(); 
 
   //Handles tasks when a user disconnects 
-  DisconnectEvent({io, socket, ExistingSession})
+  DisconnectEvent({io, socket, ExistingSession, messageStore})
 
   //when a user sends an invite for a private chat to another
   ReceiveInvite({io, socket, ExistingSession, messageStore}); 

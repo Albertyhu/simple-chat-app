@@ -1,3 +1,5 @@
+const { printSocketRooms } = require('../hooks/array.js')
+
 const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageStore}) =>{
 
     //When the client indicates that it has successfully fetched info about the new user or a user who joined
@@ -10,6 +12,9 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             msg: `${newUser.username} has joined the chat. `
             }
             io.emit("chat message", chatItem)
+
+            printSocketRooms(socket, newUser.username)
+            messageStore.saveUserSocket(MAIN_ROOM, newUser.id, socket.id)
             //save User's socket id to the system
             ExistingSession.updateUserSocketId(newUser.id, socket.id)
             UpdateClientOnlineList({io, ExistingSession})
