@@ -18,6 +18,4 @@ document.addEventListener("keypress", (e) => {
   }
 });
 
-socket.on("chat message", (chatItem) => {
-  RenderChatMessage(chatItem);
-});
+

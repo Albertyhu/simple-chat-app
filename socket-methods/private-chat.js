@@ -76,6 +76,10 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
     //updates the number of users in the chat room; 
     printSocketRooms(socket, username)
     messageStore.saveUserSocket(roomKey, id, socket.id)
+    let ExistingChatRooms = messageStore.getChatRoomsUserIsIn(id, ExistingSession)
+    if(ExistingChatRooms != null && ExistingChatRooms.length > 0){
+        io.to(socket.id).emit("update-existing-chat-room-list", ExistingChatRooms)
+    }
     var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
     io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })  

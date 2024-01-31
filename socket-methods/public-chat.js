@@ -16,7 +16,10 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             //printSocketRooms(socket, newUser.username) 
             //add user to storage
             messageStore.addUserToRoom(MAIN_ROOM, newUser.id, socket.id, true)
-
+            let ExistingChatRooms = messageStore.getChatRoomsUserIsIn(newUser.id, ExistingSession)
+            if(ExistingChatRooms != null && ExistingChatRooms.length > 0){
+                io.to(socket.id).emit("update-existing-chat-room-list", ExistingChatRooms)
+            }
             //save User's socket id to the system
             ExistingSession.updateUserSocketId(newUser.id, socket.id)
             UpdateClientOnlineList({io, ExistingSession})

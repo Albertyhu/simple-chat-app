@@ -11,15 +11,11 @@
         class = "menu-link"
 		onclick="closeMobileMenu()">Close Menu</div>
     <div
-        id = "existing-chats"
-    >
-        <label>Existing Chat Rooms</label>
-    </div>
-    <div
         id="online-list-wrapper"
     >
         <label>Users currently in the chat room.</label>   
         <ul id = "online-list"></ul>
     </div>
+    <%- include("./existing-chat-menu-item.ejs") %>
 </div>
 

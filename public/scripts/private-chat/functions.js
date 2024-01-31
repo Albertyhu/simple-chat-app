@@ -88,6 +88,8 @@ const AuthenticateUsername = async (userN, roomKey) =>{
     if (!LoginForm.classList.contains("closeForm"))
       LoginForm.classList.add("closeForm");
     AddUserElem(sessionInfo.username);
+
+    //This code is problematic because it shares the same broadcast name as the public one
     //save session info in client side 
     socket.emit("user info received", sessionInfo)
     socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})

@@ -20,6 +20,9 @@ var input = document.getElementById("input");
 var messages = document.getElementById("messages");
 var serverMessage = document.getElementById("server_message");
 
+var ExistingChats = document.getElementById('existing-chats'); 
+var ExistingChatListWrapper = document.getElementById("existing-chat-list-wrapper"); 
+
 var localUsername = localStorage.getItem("username");
 var UserID = localStorage.getItem("UserID")
 let username =

@@ -231,8 +231,6 @@ class MessageStorage {
         }
     }
     getKeyAndMemberInstanceBySocket(socketId){
-        console.log("socketId: ", socketId)
-        console.log("storage: ", this.storage)
         try{
             let foundKey = null; 
             let foundMemberKey = null; 
@@ -244,8 +242,7 @@ class MessageStorage {
                     }
                 })
             })
-            console.log("foundKey: ", foundKey)
-            console.log("foundMemberKey: ", foundMemberKey)
+
             return {
                 foundKey,
                 foundMemberKey, 
@@ -255,12 +252,10 @@ class MessageStorage {
         }
     }
     disconnectMessage(io, socket, ExistingSession){
+        let socketId = socket.id; 
         try{
-            let socketId = socket.id; 
-            console.log("disconnecting socketid: ", socketId)
             const {foundKey, foundMemberKey} = this.getKeyAndMemberInstanceBySocket(socketId)
             if(foundKey){
-                console.log("foundKey: ", foundKey)
                 let storageInstance = this.storage.get(foundKey); 
                 let updatedMembers = storageInstance.members;
                 //get user id  
@@ -279,7 +274,6 @@ class MessageStorage {
                         var userN = ExistingSession.getName(item.id)
                         return{...item, username: userN}
                     })
-                    console.log("UsersInChat: ", UsersInChat)    
 
                     //update user's online status in chat room 
                     let disconnect_message = `${ExistingSession.getName(userId)} left chat`; 
@@ -293,11 +287,9 @@ class MessageStorage {
                     }
                     //update user's status depending on whether or not he's in any chat room. 
                     if(!this.isUserOnline(userId)){
-                        console.log("update online status to offline \n")
                         ExistingSession.updateOnlineStatus(userId, false)  
                     }
                 }
-                console.log("\n")
             }
             else{
                 throw new Error(`socket.id ${socket.id} doesn't exist. \n`) 
@@ -350,6 +342,29 @@ class MessageStorage {
             }
             return false; 
         })
+    }
+    //returns all chatrooms that the user is in 
+    //returns roomKey and an array of users 
+    getChatRoomsUserIsIn(userId, ExistingSession){
+        let ExistingChat = []; 
+        try{
+            this.storage.forEach((item, key) =>{
+                if(item.members.some(member =>member.id === userId)){
+                    let existingUsers = item.members.map(val => {
+                        //get username from id
+                        return ExistingSession.getName(val.id)
+                    })
+
+                    let obj = {
+                        roomKey: key, 
+                        users: existingUsers, 
+                    }
+                    //add chatroom info to array 
+                    ExistingChat.push(obj)
+                }
+            })
+        } catch(e){console.log(`getChatRoomsUserIsIn ${e}`)}
+        return ExistingChat; 
     }
 }
 
