@@ -7,7 +7,7 @@
  * 
  */
 //Tracks all the chatrooms the current user is a member of. 
-class ChatRoom {
+class ChatRoomClass {
     constructor(){
         this.chatRooms = [];  
     }
@@ -39,6 +39,7 @@ class ChatRoom {
                     found = true; 
                     item.users = Array.from(userSet)
                 }
+                return item; 
             }); 
             if(found){
                 this.chatRooms = arr; 
@@ -59,8 +60,10 @@ class ChatRoom {
                     let userSet = new Set(tempArr)
                     item.users = Array.from(userSet)
                 }
+                return item; 
             }); 
-            if(found){
+            console.log("arr: ", arr)
+            if(found){      
                 this.chatRooms = arr; 
             }
             else{
@@ -77,6 +80,7 @@ class ChatRoom {
                     let tempArr = item.users.filter(item => item != user);
                     item.users = tempArr; 
                 }
+                return item 
             }); 
             if(found){
                 this.chatRooms = arr; 
@@ -90,3 +94,5 @@ class ChatRoom {
         return this.chatRooms; 
     }
 }
+
+const CurrentUserChatRooms = new ChatRoomClass(); 

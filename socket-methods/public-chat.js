@@ -1,4 +1,6 @@
-const { printSocketRooms } = require('../hooks/array.js')
+const { printSocketRooms } = require('../hooks/array.js'); 
+const {genKey} = require("../hooks/string.js"); 
+const {UpdateUserChatRoomList} = require("./shared-methods.js"); 
 
 const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageStore}) =>{
 
@@ -16,16 +18,20 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             //printSocketRooms(socket, newUser.username) 
             //add user to storage
             messageStore.addUserToRoom(MAIN_ROOM, newUser.id, socket.id, true)
-            let ExistingChatRooms = messageStore.getChatRoomsUserIsIn(newUser.id, ExistingSession)
-            if(ExistingChatRooms != null && ExistingChatRooms.length > 0){
-                io.to(socket.id).emit("update-existing-chat-room-list", ExistingChatRooms)
-            }
+
             //save User's socket id to the system
             ExistingSession.updateUserSocketId(newUser.id, socket.id)
+
+            //update the chat rooms that the sure is in 
+            //Broadcast to other users who are in the same chatroom
+            UpdateUserChatRoomList(socket, newUser.username, newUser.id, ExistingSession, messageStore, MAIN_ROOM)
+
+            //This updates the list of users who are currently online 
             UpdateClientOnlineList({io, ExistingSession})
         });
     }
-
+    
+    //This updates the list of users who are currently online 
     const UpdateClientOnlineList = () =>{
         var updatedList = ExistingSession.returnAllSessionsAsArray(); 
         io.emit("update user list", updatedList)

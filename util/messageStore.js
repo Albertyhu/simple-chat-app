@@ -298,7 +298,7 @@ class MessageStorage {
     }
 
     //returns Set of all keys of rooms that the user recorded to be in
-    getAllRoomsUserIsIn(userId){
+    getAllRoomKeysByUserId(userId){
         let keySet = new Set(); 
         try{
             this.storage.forEach((value,key)=>{
@@ -308,14 +308,14 @@ class MessageStorage {
                     }
                 })
             })
-        }catch(e){console.log(`getAllRoomsUserIsIn ${e}`)}
+        }catch(e){console.log(`getAllRoomKeysByUserId ${e}`)}
         return keySet; 
     }
 
     //checks to see if user is online by seeing if he has any socket.id's left 
     isUserOnline(userId) {
         try {
-            let keySet = this.getAllRoomsUserIsIn(userId);
+            let keySet = this.getAllRoomKeysByUserId(userId);
 
             for (let keyValue of keySet) {
                 let members = this.storage.get(keyValue).members;
@@ -344,7 +344,7 @@ class MessageStorage {
         })
     }
     //returns all chatrooms that the user is in 
-    //returns roomKey and an array of users 
+    //returns an array of roomKey and an array of usernames
     getChatRoomsUserIsIn(userId, ExistingSession){
         let ExistingChat = []; 
         try{
@@ -363,7 +363,8 @@ class MessageStorage {
                     ExistingChat.push(obj)
                 }
             })
-        } catch(e){console.log(`getChatRoomsUserIsIn ${e}`)}
+        } catch(e)
+        {console.log(`getChatRoomsUserIsIn ${e}`)}
         return ExistingChat; 
     }
 }

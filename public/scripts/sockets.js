@@ -1,4 +1,5 @@
 
+//This updates the list of users who are currently online 
 socket.on("update user list", (userList) => {
   RenderAllUserElements(userList); 
 });
@@ -27,21 +28,3 @@ socket.on("chat message", (chatItem) => {
   RenderChatMessage(chatItem);
 });
 
-//updates the list of existing chat rooms that the user is a member of
-/*
-  type ExistingChatRooms = {
-    users: Array<obj>,
-    roomKey: string, 
-  } 
-*/
-socket.on("update-existing-chat-room-list", (ExistingChatRooms) =>{
-  RenderExistingChatList(ExistingChatRooms)
-})
-
-socket.on("addAllChatRooms", (event)=>{
-
-})
-
-socket.on ("addUserToChat", (event)=>{
-  
-})

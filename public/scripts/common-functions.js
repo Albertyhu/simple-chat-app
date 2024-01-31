@@ -60,6 +60,13 @@ const SampleChats = [
   }, 
 ]
 
+/**
+ * type chatArray ={
+ *  room_key: string, 
+ *  users: Array<string>
+ * }
+ */
+
 //Renders the UI elements for existing Chat rooms on the menu 
 const RenderExistingChatList = (chatArray) =>{
   //reset the list wrapper on the menu
@@ -107,20 +114,22 @@ const RenderChatListItem = (parentDiv, chatItem, index, size) =>{
   users.forEach((userItem, userIndex) =>{RenderUserInChatRoom(listItemsBlock, userItem, userIndex, users.length)})
 
   parentDiv.appendChild(list); 
-  //If the chat room is a private chat room and room_key directs to current chat room, do not make "list" a link
-  if(roomKey && roomKey != room_key){
-    list.style.cursor = "pointer"; 
-    list.addEventListener("click", ()=>{
-      window.open(`/private-chat/${room_key}`); 
-    })
-  }
+
   //If the chat room is the main chat room and room_key directs to the main chat room, do not make "list" a link
-  else if(room_key !== "PUBLIC"){
-    list.style.cursor = "pointer"; 
-    list.addEventListener("click", ()=>{
-      window.open(`/private-chat/${room_key}`); 
-    })
+  if(roomKey != room_key){
+    list.style.cursor = "pointer";
+    if(room_key === "PUBLIC"){
+      list.addEventListener("click", ()=>{
+        window.location.href = `/`; 
+      })  
+    }
+    else(
+      list.addEventListener("click", ()=>{
+        window.location.href = `/private-chat/${room_key}`; 
+      })     
+    )
   }
+
 } 
 
 //Complements the function RenderChatListItem for rendering each member of a chat room 

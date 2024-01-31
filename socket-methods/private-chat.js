@@ -2,6 +2,8 @@ const {
   printSocketRooms, 
 } = require("../hooks/array.js"); 
 
+const {UpdateUserChatRoomList} = require("./shared-methods.js"); 
+
 const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
   //socket instence for when a someone once to send an invite 
   socket.on("chat-invite", (invite) => {
@@ -71,17 +73,15 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
     //updates the number of users in the chat room; 
     printSocketRooms(socket, username)
     messageStore.saveUserSocket(roomKey, id, socket.id)
-    let ExistingChatRooms = messageStore.getChatRoomsUserIsIn(id, ExistingSession)
-    console.log("server updating chat: ", ExistingChatRooms)
-    console.log("userid: ", id)
-    console.log("roomKey: ", roomKey)
-    if(ExistingChatRooms != null && ExistingChatRooms.length > 0){
-        //update existing chat room list in designated private chat room
-        io.sockets.in(socket.id).emit(`update-existing-chat-room-list`, ExistingChatRooms)
-    }
+
+    //update the chat rooms that the sure is in 
+    //Broadcast to other users who are in the same chatroom
+    UpdateUserChatRoomList(socket, username, id, ExistingSession, messageStore, roomKey);
+
     console.log("\n")
-    var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
-    io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
+
+    // var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
+    // io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })  
 }
 
