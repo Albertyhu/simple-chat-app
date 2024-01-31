@@ -37,3 +37,11 @@ socket.on("chat message", (chatItem) => {
 socket.on("update-existing-chat-room-list", (ExistingChatRooms) =>{
   RenderExistingChatList(ExistingChatRooms)
 })
+
+socket.on("addAllChatRooms", (event)=>{
+
+})
+
+socket.on ("addUserToChat", (event)=>{
+  
+})

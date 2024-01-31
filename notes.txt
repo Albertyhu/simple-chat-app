@@ -18,3 +18,5 @@ It's based on the user's connected status.
 It should be based on the number of socket id's that the users has. 
 
 Need to work on MessageStore.disconnectMessage
+
+https://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender
