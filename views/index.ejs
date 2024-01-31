@@ -13,8 +13,10 @@
     <%- include('./partials/login-form.ejs') %> 
     <%- include("./partials/nav.ejs") %> 
     <%- include("./partials/menu.ejs") %>
+    
     <script>
         var sessionID = `<%= sessionID %>`
+        var roomKey = "PUBLIC"
     </script>
     <ul id="messages"></ul>
     <div

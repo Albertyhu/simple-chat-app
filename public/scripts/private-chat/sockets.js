@@ -35,3 +35,8 @@ socket.on(UserDisconnectReceiver , (event)=>{
   RenderChatMessage(chatItem) 
   RenderAllUserElements(UsersInChat);      
 })
+
+socket.on(`update-existing-chat-room-list`, (ExistingChatRooms) =>{
+  console.log("updating list in private chat: ", ExistingChatRooms)
+  RenderExistingChatList(ExistingChatRooms)
+})

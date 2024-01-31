@@ -109,7 +109,6 @@ const removeUserTypingNote = (ID) => {
 //Renders the typing message for each user
 //This functions is used when the list of online users is updated and a re-render is necessary 
 const RenderAllUserElements = (userList) =>{
-    console.log("userList: ", userList)
     UserList.innerHTML = "";
     serverMessage.innerHTML = "";
     userList.forEach((user) => {

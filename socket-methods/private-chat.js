@@ -62,12 +62,7 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
       roomKey: roomKey, 
       socketId: socket.id,       
     }
-    //send chat history to client 
-    //This is flawed because the client may not be ready to receive the broadcasted message. 
-    var chatHistory = messageStore.getChatHistoryById(roomKey); 
-    if(chatHistory){
-      socket.to(socket.id).emit(`room-${roomKey}-chat-history`, chatHistory)
-    }
+
     //broadcast message to the chat room 
     io.emit(`room-${roomKey}`, chatItem)
     //add user to storage
@@ -77,9 +72,14 @@ const ReceiveJoinedPrivateChat = ({io, socket, ExistingSession, messageStore})=>
     printSocketRooms(socket, username)
     messageStore.saveUserSocket(roomKey, id, socket.id)
     let ExistingChatRooms = messageStore.getChatRoomsUserIsIn(id, ExistingSession)
+    console.log("server updating chat: ", ExistingChatRooms)
+    console.log("userid: ", id)
+    console.log("roomKey: ", roomKey)
     if(ExistingChatRooms != null && ExistingChatRooms.length > 0){
-        io.to(socket.id).emit("update-existing-chat-room-list", ExistingChatRooms)
+        //update existing chat room list in designated private chat room
+        io.sockets.in(socket.id).emit(`update-existing-chat-room-list`, ExistingChatRooms)
     }
+    console.log("\n")
     var UsersInChat = ExistingSession.FormatArrayOfUsers(messageStore.getUserFromRoom(roomKey)); 
     io.emit(`update-list-in-room-${roomKey}`, UsersInChat);  
   })  

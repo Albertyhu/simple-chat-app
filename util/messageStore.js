@@ -356,7 +356,7 @@ class MessageStorage {
                     })
 
                     let obj = {
-                        roomKey: key, 
+                        room_key: key, 
                         users: existingUsers, 
                     }
                     //add chatroom info to array 

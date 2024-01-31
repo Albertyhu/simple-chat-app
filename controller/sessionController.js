@@ -25,10 +25,14 @@ const AddUser = (req, res, next) =>{
             username,  
             connected: true, 
         }
-        ExistingSession.saveSession(newId, session) 
-
+        ExistingSession.saveSession(newId, session)   
     }
-    return res.status(200).json(session)
+    try{
+        chatHistory = messageStore.getChatHistoryById("PUBLIC")
+    } catch(e){
+        return res.status(500).json({error: e})
+    }
+    return res.status(200).json({session, messages: chatHistory})
 }
 
 const LogSession = (req, res) =>{
@@ -48,14 +52,18 @@ const AddUserInPrivateChat = (req, res) =>{
     //Check if the username is already registered with the site and has an existing session 
     let session =  ExistingSession.findSessionByName(username)
     //create a new session if one doesn't exist; 
+    var sessionId = null; 
     if(!session){
-        const newId = uuidv4(); 
+        sessionId = uuidv4(); 
         session = {
-            id: newId, 
+            id: sessionId, 
             username,  
             connected: true, 
         }
-        ExistingSession.saveSession(newId, session)
+        ExistingSession.saveSession(sessionId, session)
+    }
+    else{
+        sessionId = session.id
     }
     var chatHistory = []; 
     try{
@@ -63,7 +71,7 @@ const AddUserInPrivateChat = (req, res) =>{
     } catch(e){
         return res.status(500).json({error: e})
     }
-    return res.status(200).json({sessionInfo: session, message: chatHistory})
+    return res.status(200).json({sessionInfo: session, messages: chatHistory})
 }
 
 //obsolete

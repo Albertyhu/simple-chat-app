@@ -82,9 +82,10 @@ const AuthenticateUsername = async (userN, roomKey) =>{
   .then(result =>{
     const {
       sessionInfo,
-      message, 
+      messages, 
     } = result; 
     Session.saveSessionInfo(sessionInfo.username, sessionInfo.id, true)
+    const LoginForm = document.getElementById("login-form");
     if (!LoginForm.classList.contains("closeForm"))
       LoginForm.classList.add("closeForm");
     AddUserElem(sessionInfo.username);
@@ -93,11 +94,9 @@ const AuthenticateUsername = async (userN, roomKey) =>{
     //save session info in client side 
     socket.emit("user info received", sessionInfo)
     socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})
-    message.forEach(chatItem =>{
+    messages?.forEach(chatItem =>{
       RenderMessage(chatItem)
     })
   })
   .catch(error => {console.log("error: ", error)})
 }
-
-

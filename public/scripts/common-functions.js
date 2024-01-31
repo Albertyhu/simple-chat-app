@@ -70,7 +70,7 @@ const RenderExistingChatList = (chatArray) =>{
   })
 }
 
-//Renders the UI elements for existing Chat rooms on the menu 
+ //Renders the UI elements for existing Chat rooms on the menu 
 const RenderChatListItem = (parentDiv, chatItem, index, size) =>{
   const {
     users, 
@@ -82,14 +82,14 @@ const RenderChatListItem = (parentDiv, chatItem, index, size) =>{
   list.style.margin = "5px auto";
   list.style.borderTop = "1px solid #ffffff";
 
-  if(size - index == 1){
+  if(size - index == 1){ 
     list.style.borderBottom = "1px solid #ffffff";
-  }
+  } 
 
-  const label = document.createElement("label"); 
+  const label = document.createElement("label");  
 
   label.classList.add("existing-chat-label"); 
-  label.innerHTML = `Room ${index + 1}`; 
+  label.innerHTML = room_key === "PUBLIC" ? "Main Chat" : `Room ${index}`; 
   label.style.textAlign = "left"; 
   list.appendChild(label); 
 
@@ -121,13 +121,12 @@ const RenderChatListItem = (parentDiv, chatItem, index, size) =>{
       window.open(`/private-chat/${room_key}`); 
     })
   }
-  
 } 
 
 //Complements the function RenderChatListItem for rendering each member of a chat room 
 const RenderUserInChatRoom = (parentDiv, user, index, size) => {
   const UserSpan = document.createElement("span"); 
-  UserSpan.innerText= size - index > 1 ? `${user}, ` : `and ${user}.`
+  UserSpan.innerText= size - index > 1 ? `${user}, ` : size > 1 ? `and ${user}.` : `${user}.`
   parentDiv.appendChild(UserSpan) 
 
 }

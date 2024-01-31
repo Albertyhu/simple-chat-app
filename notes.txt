@@ -4,6 +4,8 @@
 //save session info in client side in private chats  
 socket.emit("user info received", sessionInfo)
 
+The existing chat room list in private messages still need work.
+
 1/30/24
 Need to work on:
 1. Online user list on the menu for both public and private 

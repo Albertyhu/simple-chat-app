@@ -9,6 +9,9 @@ var LogoutLink = document.getElementById("logout-link");
 var MenuHeader = document.getElementById("MenuHeader");
 const UserList = document.getElementById("online-list");
 
+const UsernameInput = document.getElementById("username-input");
+
+
 //elements for rendering the notification panel 
 var NotificationTab = document.getElementById("notification-header");
 var NotificationBody = document.getElementById("notification-body");
