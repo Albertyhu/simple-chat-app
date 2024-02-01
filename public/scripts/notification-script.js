@@ -1,3 +1,8 @@
+//elements for rendering the notification panel 
+var NotificationTab = document.getElementById("notification-header");
+var NotificationBody = document.getElementById("notification-body");
+var NotificationCount = document.getElementById("notification-count")
+
 const IncrementNotification = () => {
   var newNotification = localStorage.getItem("new_notification")
   newNotification++; 
@@ -31,7 +36,8 @@ const AcceptPrivateChatInvite = (roomKey) =>{
 }
 
 //Creates notification for the invitee notifying him that someone wants to chat with him 
-const CreatePrivateNotification = (inviter, roomKey) => {
+const CreateChatInviteNotification = (inviter, roomKey, time) => {
+  console.log("fired")
   var MessageDiv = document.createElement("div");
   MessageDiv.classList.add("notification-message");
 
@@ -59,6 +65,11 @@ const CreatePrivateNotification = (inviter, roomKey) => {
   ButtonDiv.appendChild(AcceptBtn);
   ButtonDiv.appendChild(IgnoreBtn);
 
+  let DateDiv = document.createElement("div");
+  let dateTime = new Date(time)
+  DateDiv.innerHTML = dateTime.toLocaleString(); 
+  MessageDiv.appendChild(DateDiv)
+
   MessageDiv.appendChild(Paragraph);
   MessageDiv.appendChild(ButtonDiv);
 
@@ -78,6 +89,7 @@ socket.on(`invited-to-chat`, (invite) => {
       //socket.id of invitee 
       invitee,
       roomKey, 
+      time, 
   } = invite;   
-  CreatePrivateNotification(inviter_name, roomKey);
+  CreateChatInviteNotification(inviter_name, roomKey, time);
 });

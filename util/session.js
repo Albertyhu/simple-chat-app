@@ -1,7 +1,9 @@
 const { 
   convertToUniqueArray,
   convertMapToArray, 
+  SortNotificationsByOrder, 
   } = require("../hooks/array.js")
+
 const { v4:uuidv4 } = require("uuid"); 
 
 /**
@@ -182,13 +184,15 @@ class SessionStore{
       //get session of invitee
       let inviteeSession = this.sessions.get(invitee)
       let NoteId = uuidv4(); 
-      inviteeSession.InviteNotification.add(NoteId, {
+      let newNote = {
         roomKey,
         time,
         inviter_name, 
         inviter,
         seen: false, 
-      })
+      } 
+
+      inviteeSession.InviteNotification.set(NoteId, newNote)
       this.sessions.set(invitee, inviteeSession); 
     } catch(e){console.log(`AddInviteNotification ${e}`)}
   }
@@ -201,10 +205,23 @@ class SessionStore{
       this.sessions.set(userId, session)
     } catch(e){console.log(`updateNotificationView ${e}`)}
   } 
+  //removes a notification
+  removeNotification(userId, NoteId){
+    try{
+      let removedNotification = this.sessions.get(userId).InviteNotification.get(NoteId)
+      this.sessions.get(userId).InviteNotification.delete(NoteId); 
+      console.log("removeNotification: ",  removedNotification )
+    } catch(e){console.log(`removeNotification ${e}`)}   
+  }
   //returns Invite Notifications as an array
+  //the notifications have to be in descending order 
   getNotificationsByUserId(userId){
     try{ 
-      return convertMapToArray(this.sessions.get(userId).InviteNotification);
+      //Retrieve notifications from sessions by user Id
+      //SortNotificationsByOrder will sort the array by descending date
+      let notifications = SortNotificationsByOrder(convertMapToArray(this.sessions.get(userId).InviteNotification), false);
+      console.log("getNotificationsByUserId notifications: ", notifications); 
+      return notifications; 
     } catch(e){console.log(`getAllNotifications ${e}`)}
   }
 }

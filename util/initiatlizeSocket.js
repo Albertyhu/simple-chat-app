@@ -83,6 +83,7 @@ const AddSession = (username) =>{
             id: newId,
             username,  
             connected: true, 
+            InviteNotification: new Map,  
         }
         ExistingSession.saveSession(newId, session)
     console.log("new session: ", session)

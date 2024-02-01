@@ -1,12 +1,14 @@
-const session = require("express-session")
-const {v4:uuidv4} = require("uuid")
+const {v4:uuidv4} = require("uuid");
 const { 
     messageStore,
     ExistingSession  
 } = require("../util/initiatlizeSocket.js"); 
 const { 
   MAIN_ROOM
-} = require("../config/constants.js")
+} = require("../config/constants.js");
+const {
+  genKey, 
+} = require("../hooks/string.js"); 
 
 //Adds user to public chat
 //This is sends the necessary information to the client to render the page
@@ -14,22 +16,29 @@ const AddUser = (req, res, next) =>{
     const {username} = req.body; 
     //Check if the username is already registered with the site and has an existing session 
     let session =  ExistingSession.findSessionByName(username)
+    let notifications = []; 
+    const newId = uuidv4(); 
     //create a new session if one doesn't exist; 
     if(!session || session === null || session === undefined){
-        const newId = uuidv4(); 
+
         session = {
             id: newId, 
             username,  
             connected: true, 
+            //InviteNotification: new Map(), 
+            InviteNotification: SampleNotifications, 
         }
         ExistingSession.saveSession(newId, session)   
+    } else {
+        console.log("old user")
+        notifications = ExistingSession.getNotificationsByUserId(session.id)
     }
     try{
         chatHistory = messageStore.getChatHistoryById("PUBLIC")
     } catch(e){
         return res.status(500).json({error: e})
     }
-    return res.status(200).json({session, messages: chatHistory})
+    return res.status(200).json({session, messages: chatHistory, notifications: ExistingSession.getNotificationsByUserId(newId)})
 }
 
 const LogSession = (req, res) =>{
@@ -47,7 +56,8 @@ const AddUserInPrivateChat = (req, res) =>{
     const {username} = req.body; 
     const {roomKey} = req.params; 
     //Check if the username is already registered with the site and has an existing session 
-    let session =  ExistingSession.findSessionByName(username)
+    let session =  ExistingSession.findSessionByName(username);
+    let notifications = []; 
     //create a new session if one doesn't exist; 
     var sessionId = null; 
     if(!session){
@@ -56,11 +66,13 @@ const AddUserInPrivateChat = (req, res) =>{
             id: sessionId, 
             username,  
             connected: true, 
+            InviteNotification: new Map(), 
         }
         ExistingSession.saveSession(sessionId, session)
     }
     else{
         sessionId = session.id
+        notifications = ExistingSession.getNotificationsByUserId(session.id)
     }
     var chatHistory = []; 
     try{
@@ -68,7 +80,7 @@ const AddUserInPrivateChat = (req, res) =>{
     } catch(e){
         return res.status(500).json({error: e})
     }
-    return res.status(200).json({sessionInfo: session, messages: chatHistory})
+    return res.status(200).json({sessionInfo: session, messages: chatHistory, notifications})
 }
 
 //obsolete
@@ -89,3 +101,38 @@ module.exports = {
     AddUserInPrivateChat, 
     RetrieveChat
 } 
+
+
+var SampleNotifications = new Map()
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: new Date (),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false, 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: new Date (),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false, 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: new Date (),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false, 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: new Date (),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false, 
+})

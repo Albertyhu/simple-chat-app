@@ -83,6 +83,7 @@ const AuthenticateUsername = async (userN, roomKey) =>{
     const {
       sessionInfo,
       messages, 
+      notifications, 
     } = result; 
     Session.saveSessionInfo(sessionInfo.username, sessionInfo.id, true)
     const LoginForm = document.getElementById("login-form");
@@ -90,12 +91,16 @@ const AuthenticateUsername = async (userN, roomKey) =>{
       LoginForm.classList.add("closeForm");
     AddUserElem(sessionInfo.username);
 
-    //This code is problematic because it shares the same broadcast name as the public one
     //save session info in client side 
     //socket.emit("user info received", sessionInfo)
     socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})
     messages?.forEach(chatItem =>{
       RenderMessage(chatItem)
+    })
+
+    //render unread notifications 
+    notifications.forEach(note =>{
+      CreateChatInviteNotification(note.inviter, note.roomKey, note.time)
     })
   })
   .catch(error => {console.log("error: ", error)})

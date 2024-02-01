@@ -47,7 +47,8 @@ const AuthenticateUsername = async (userN) =>{
   .then(result =>{
     const {
       messages, 
-      session
+      session, 
+      notifications, 
     } = result; 
     Session.saveSessionInfo(session.username, session.id, true)
     if (!LoginForm.classList.contains("closeForm"))
@@ -56,9 +57,18 @@ const AuthenticateUsername = async (userN) =>{
     //save session info in client side 
     Session.saveSessionInfo(session.username, session.id, true)
 
+    //notify server that client has received all user info 
     socket.emit("user info received", session)
+
+    //render chat history for the page 
     messages?.forEach(chatItem =>{
       RenderMessage(chatItem)
+    })
+
+    //render unread notifications 
+    console.log("auth notifications: ", notifications)
+    notifications?.forEach(note =>{
+      CreateChatInviteNotification(note.inviter, note.roomKey, note.time)
     })
   })
   .catch(error => {console.log("error: ", error)})

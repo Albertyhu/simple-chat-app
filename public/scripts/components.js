@@ -11,12 +11,6 @@ const UserList = document.getElementById("online-list");
 
 const UsernameInput = document.getElementById("username-input");
 
-
-//elements for rendering the notification panel 
-var NotificationTab = document.getElementById("notification-header");
-var NotificationBody = document.getElementById("notification-body");
-var NotificationCount = document.getElementById("notification-count")
-
 var socket = io();
 var chatform = document.getElementById("chatform");
 var input = document.getElementById("input");

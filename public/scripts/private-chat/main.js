@@ -1,15 +1,3 @@
-// var ToggleExistingRoomBtn = document.getElementById("ToggleExistingRoom"); 
-// ToggleExistingRoomBtn.addEventListener("click", ()=>{
-//     if(!MobileExistingRoomList.classList.contains("existing-rooms-list-closed")){
-//         ToggleExistingRoomBtn.classList.remove("RototateExistingRoomBtn"); 
-//         MobileExistingRoomList.classList.add("existing-rooms-list-closed")
-//     }
-//     else{
-//         ToggleExistingRoomBtn.classList.add("RototateExistingRoomBtn"); 
-//         MobileExistingRoomList.classList.remove("existing-rooms-list-closed")
-//     }
-// }) 
-
 //chat input functions
 const submitEvent = (e) => {
   e.preventDefault();

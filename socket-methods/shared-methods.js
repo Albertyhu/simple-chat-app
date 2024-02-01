@@ -33,6 +33,17 @@ const ChooseWhosClientListToUpdate = ({wasOffline, io, socket, ExistingSession, 
     }    
 }
 
+const RemoveNotification = ({io, ExistingSession}) =>{
+    io.on("Remove Notification", (event)=>{
+        const {
+            userId, 
+            noteId, 
+        } = event; 
+        ExistingSession.removeNotification(userId, noteId); 
+    })
+
+}
+
 module.exports = {
     UpdateUserChatRoomList, 
     UpdateEveryonesClientOnlineList ,

@@ -15,7 +15,7 @@ const convertMapToArray = (userMap) => {
     var userArray = [];
     userMap.forEach((value, key) => {
       var user= {
-        value, 
+        ...value, 
         id: key,
       };
       userArray.push(user);
@@ -103,6 +103,21 @@ const convertToUniqueArray = (arr) =>{
   }catch(e){console.log(`convertToUniqueArray ${e}`)}
 }
 
+//used for sorting an array of notifications by ascending or descending order 
+const SortNotificationsByOrder = (arr, ascending) =>{
+  try{
+    if(Array.isArray(arr)){
+      //ascending order
+      if(ascending){
+        return arr.sort((a,b)=> a.date - b.date); 
+      }
+      //descending order 
+      return arr.sort((a,b)=> b - a)
+    }
+    return []; 
+  } catch(e){console.log(`SortNotificationsByOrder ${e}`)}
+}
+
 module.exports = { 
   convertUserMapToArray, 
   convertMapToArray, 
@@ -112,5 +127,6 @@ module.exports = {
   isUsernameUnique,
   CompareArrays,
   printSocketRooms,
-  convertToUniqueArray 
+  convertToUniqueArray,
+  SortNotificationsByOrder
 };
