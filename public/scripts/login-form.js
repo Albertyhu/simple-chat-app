@@ -1,4 +1,5 @@
 const LoginForm = document.getElementById("login-form");
+
 UsernameInput.addEventListener("change", (e) => {
   if (!LoginErrorMessage.classList.contains("hideLoginError")) {
     LoginErrorMessage.classList.add("hideLoginError");

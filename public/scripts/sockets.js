@@ -1,8 +1,8 @@
 
-//This updates the list of users who are currently online 
-socket.on("update user list", (userList) => {
-  RenderAllUserElements(userList); 
-});
+// //This updates the list of users who are currently online 
+// socket.on("update user list", (userList) => {
+//   RenderAllUserElements(userList); 
+// });
 
 socket.on("user-disconnected", (event)=>{
   console.log("client fired")

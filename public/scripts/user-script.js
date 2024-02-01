@@ -103,8 +103,7 @@ const removeUserTypingNote = (ID) => {
   var removeNode = document.getElementById(`typing-${ID}`);
   serverMessage.removeChild(removeNode);
 };
-
-//needs to be refined 
+ 
 //Renders list of online users 
 //Renders the typing message for each user
 //This functions is used when the list of online users is updated and a re-render is necessary 

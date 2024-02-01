@@ -154,7 +154,36 @@ class MessageStorage {
             return []; 
         }
     }
-
+    //Returns all online members in all chat rooms in an array
+    //it also returns an array formatted for the client to render the list
+    getAllOnlineUsers(ExistingSession){ 
+         try{
+            let onlineUsers = []; 
+            let onlineUsersIds = [];
+            this.storage.forEach(item =>{
+                if(item.members  && Array.isArray(item.members)){
+                    let online = item.members.filter(user => user.socketIds.size > 0) 
+                    online = online.map(user => {
+                        let username = ExistingSession.getName(user.id)
+                        return {
+                            username,
+                            id: user.id, 
+                            connected: user.in_chat_room, 
+                        }
+                    })
+                    onlineUsersIds = onlineUsersIds.concat(online.map(user => user.id))
+                    let tempSet = new Set(onlineUsersIds)
+                    onlineUsersIds = Array.from(tempSet)
+                    onlineUsers = onlineUsers.concat(online)
+                }
+            })
+            let uniqueOnlineUsers = onlineUsersIds.map(userId => onlineUsers.find(user => user.id === userId));
+            return uniqueOnlineUsers; 
+        } catch(e){
+            console.log(`getAllOnlineUsers ${e}`)
+            return []; 
+        }       
+    }
     addUserToRoom(roomKey, userId, socketId, status){ 
         //first check if the userId already exist
         try{

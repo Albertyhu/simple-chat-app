@@ -1,7 +1,4 @@
 const session = require("express-session")
-const {
-        UpdateClientOnlineList, 
-    } = require("../socket-methods/auth.js")
 const {v4:uuidv4} = require("uuid")
 const { 
     messageStore,

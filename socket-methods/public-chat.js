@@ -1,6 +1,9 @@
 const { printSocketRooms } = require('../hooks/array.js'); 
 const {genKey} = require("../hooks/string.js"); 
-const {UpdateUserChatRoomList} = require("./shared-methods.js"); 
+const {
+    UpdateUserChatRoomList,
+    ChooseWhosClientListToUpdate
+} = require("./shared-methods.js"); 
 
 const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageStore}) =>{
 
@@ -15,6 +18,11 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             }
             io.emit("chat message", chatItem) 
 
+            //check to see if the user is previously offline, which means he is not in any chat rooms 
+            //the function checks the chat rooms for any of the user's sockets. 
+            //This has to be done before the user is added to messageStore
+            let wasOffline = !messageStore.isUserOnline(newUser.id)
+
             //printSocketRooms(socket, newUser.username) 
             //add user to storage
             messageStore.addUserToRoom(MAIN_ROOM, newUser.id, socket.id, true)
@@ -25,18 +33,12 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             //update the chat rooms that the sure is in 
             //Broadcast to other users who are in the same chatroom
             UpdateUserChatRoomList(socket, newUser.username, newUser.id, ExistingSession, messageStore, MAIN_ROOM)
-
-            //This updates the list of users who are currently online 
-            UpdateClientOnlineList({io, ExistingSession})
+            
+            //Choose between updating everyone's list of online users or just the current user's 
+            ChooseWhosClientListToUpdate({wasOffline, io, socket, ExistingSession, messageStore})
         });
     }
     
-    //This updates the list of users who are currently online 
-    const UpdateClientOnlineList = () =>{
-        var updatedList = ExistingSession.returnAllSessionsAsArray(); 
-        io.emit("update user list", updatedList)
-    }
-  
     const ReceivePublicChatMess = () =>{
         socket.on("chat message", (message) => {
             const timeSubmitted = new Date(); 

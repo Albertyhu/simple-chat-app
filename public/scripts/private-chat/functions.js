@@ -92,7 +92,7 @@ const AuthenticateUsername = async (userN, roomKey) =>{
 
     //This code is problematic because it shares the same broadcast name as the public one
     //save session info in client side 
-    socket.emit("user info received", sessionInfo)
+    //socket.emit("user info received", sessionInfo)
     socket.emit("joined-private-chat", {roomKey, username: Session.username, id: Session.sessionId})
     messages?.forEach(chatItem =>{
       RenderMessage(chatItem)

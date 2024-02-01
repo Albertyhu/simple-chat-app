@@ -1,7 +1,12 @@
+//This updates the list of users who are currently online 
+socket.on("update user list", (userList) => {
+  RenderAllUserElements(userList); 
+});
+
 //updates the list of existing chat rooms that the user is a member of
 /*
   type ExistingChatRooms = {
-    users: Array<obj>,
+    users: Array<obj>, 
     roomKey: string, 
   } 
 */

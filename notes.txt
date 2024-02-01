@@ -1,4 +1,7 @@
 1/31/24
+Error: When someone joins private chatroom, main chatroom also gets the message
+
+1/31/24
 list of online users in private chat is not working
 
 I am considering add notifications back to private chat

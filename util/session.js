@@ -1,4 +1,8 @@
-const { convertUserMapToArrays } = require("../hooks/array.js")
+const { 
+  convertToUniqueArray,
+  convertMapToArray, 
+  } = require("../hooks/array.js")
+const { v4:uuidv4 } = require("uuid"); 
 
 /**
  * SessionStore keeps track of all info about the current users of the chat app including whether or not they are online.
@@ -12,6 +16,24 @@ const { convertUserMapToArrays } = require("../hooks/array.js")
  *  id: string, 
  *  username: string, 
  *  connected: boolean, 
+ * //notificatin needs to be built
+ *  InviteNotification: Map<NoteId, obj>
+ * 
+ * }
+ * 
+ */
+
+/**
+ * type InviteNotificationObj = {
+ *  NoteId: string, 
+ * 
+ *  roomKey: string, , 
+ *  time: Date,
+*   inviter_name: string, 
+    //socket.id of inviter
+    inviter: string,
+    //socket.id of invitee 
+    seen: boolean, 
  * }
  * 
  */
@@ -114,7 +136,8 @@ class SessionStore{
         id: key, 
         username: value.username, 
         connected: value.connected,
-        socketId: value.socketId, 
+        InviteNotification: value.InviteNotification, 
+      //  socketId: value.socketId, 
       }
       arr.push(obj)
     })
@@ -145,13 +168,44 @@ class SessionStore{
             const onlineUser = {
                 username: user.username, 
                 id: user.id,
-                socketId: user.socketId,  
+                socketId: user.socketId,
+                InviteNotification: user.InviteNotification,   
               }
             arr.push(onlineUser)
           }
       })
       return arr; 
-    } catch(e){console.log(`convertIdSetToArrayOfUsers error: ${e}`)}
+    } catch(e){console.log(`convertIdSetToArrayOfUsers ${e}`)}
+  }
+  AddInviteNotification({roomKey, time, inviter_name, inviter, invitee}){
+    try{
+      //get session of invitee
+      let inviteeSession = this.sessions.get(invitee)
+      let NoteId = uuidv4(); 
+      inviteeSession.InviteNotification.add(NoteId, {
+        roomKey,
+        time,
+        inviter_name, 
+        inviter,
+        seen: false, 
+      })
+      this.sessions.set(invitee, inviteeSession); 
+    } catch(e){console.log(`AddInviteNotification ${e}`)}
+  }
+  updateNotificationView(userId, NoteId, status){
+    try{
+      let session = this.sessions.get(userId)
+      let notification = session.InviteNotification.get(NoteId); 
+      notification.seen = status; 
+      session.InviteNotification.set(NoteId, notification); 
+      this.sessions.set(userId, session)
+    } catch(e){console.log(`updateNotificationView ${e}`)}
+  } 
+  //returns Invite Notifications as an array
+  getNotificationsByUserId(userId){
+    try{ 
+      return convertMapToArray(this.sessions.get(userId).InviteNotification);
+    } catch(e){console.log(`getAllNotifications ${e}`)}
   }
 }
 

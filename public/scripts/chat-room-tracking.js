@@ -11,9 +11,10 @@ class ChatRoomClass {
     constructor(){
         this.chatRooms = [];  
     }
-    //{room_key:string, users: Array<string>}
+    //{room_key:string, users: Array<string>} 
     addChatRoom(room_key, users){
         try{
+            //first check if a chat room with the same roomKey already exists
             if(!this.chatRooms.find(val => val.room_key === room_key)){
                 var room = {
                     room_key,
@@ -22,11 +23,9 @@ class ChatRoomClass {
                 this.chatRooms.push(room)
                 return true; 
             }
-            else{
-                throw new Error(`Room ${room_key} already exists`)
-            }
+            return false;
         }catch(e){
-            console.log("addChatRoom : ", e)
+            console.log("addChatRoom ", e)
             return false;
         }
     }   

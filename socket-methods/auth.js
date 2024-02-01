@@ -16,14 +16,7 @@ const DisconnectEvent = ({io, socket, ExistingSession, messageStore}) =>{
   });  
 }
 
-/**broadcasting to clients on public chat**/
-const UpdateClientOnlineList = ({io, ExistingSession}) =>{
-  var updatedList = ExistingSession.returnAllSessionsAsArray(); 
-  io.emit("update user list", updatedList)
-}
-
 module.exports = {
-  UpdateClientOnlineList, 
   UserLogOff,
   DisconnectEvent
 } 

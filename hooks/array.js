@@ -10,6 +10,22 @@ const convertUserMapToArray = (userMap) => {
   return userArray;
 };
 
+const convertMapToArray = (userMap) => {
+  try{
+    var userArray = [];
+    userMap.forEach((value, key) => {
+      var user= {
+        value, 
+        id: key,
+      };
+      userArray.push(user);
+    });
+    return userArray;
+  } catch(e){
+    console.log(`convertMapToArray ${e}`)
+  }
+};
+
 const removeFromMap = (id, MAP) => {
   var cloneMap = new Map(MAP);
   let target = "";
@@ -75,16 +91,26 @@ const printSocketRooms = (socket, username) => {
     const rooms = Array.from(socket.rooms);
     console.log(`user: ${username}-${socket.id}`)
     console.log(`Socket ID: ${socket.id}, Rooms: ${rooms.join(', ')} \n`);  
-  } catch(e){console.log(`printSocketRooms error: ${e}`)}
+  } catch(e){console.log(`printSocketRooms ${e}`)}
 
 };
 
+//Converts an array to a Set and then converts it back to an array so it has unique values. 
+const convertToUniqueArray = (arr) =>{
+  try{
+    let tempSet = new Set(arr); 
+    return Array.from(arr); 
+  }catch(e){console.log(`convertToUniqueArray ${e}`)}
+}
+
 module.exports = { 
   convertUserMapToArray, 
+  convertMapToArray, 
   removeFromMap,
   getNameById,
   createArrayOfUsers, 
   isUsernameUnique,
   CompareArrays,
-  printSocketRooms
+  printSocketRooms,
+  convertToUniqueArray 
 };
