@@ -64,20 +64,28 @@ NotificationTab?.addEventListener("mousedown", (e) => {
   }
 });
 
-const AcceptPrivateChatInvite = (roomKey) =>{
-  ResetNotificationCount(); 
+const RespondToPrivateChatInvite = (roomKey, noteId, accepted) =>{
+  //ResetNotificationCount(); 
   if (!NotificationBody?.classList.contains("notification-body-closed")) {
       NotificationBody?.classList.add("notification-body-closed");
     }
-  socket.emit("accept-private-chat-invite", roomKey)
+  const acceptedInvite = {
+    roomKey, 
+    userId: Session.sessionId, 
+    noteId,
+    accepted,  
+  }
+  socket.emit("respond-to-private-chat-invite", acceptedInvite)
   window.open(`/private-chat/${roomKey}`, "_blank"); 
 }
+
+
 
 //Creates notification for the invitee notifying him that someone wants to chat with him 
 const CreateChatInviteNotification = (inviter, roomKey, time, noteId, seen) => {
   IncrementNotification();  
   var MessageDiv = document.createElement("div");
-  MessageDiv.classList.add("notification-message"); 
+  MessageDiv.classList.add("notification-message");  
   MessageDiv.setAttribute("id", `noteId-${noteId}`)
   if(!seen){
     MessageDiv.classList.add("unread-notification"); 
@@ -92,7 +100,7 @@ const CreateChatInviteNotification = (inviter, roomKey, time, noteId, seen) => {
   AcceptBtn.classList.add("btn-primary");
   AcceptBtn.innerHTML = "Accept";
   AcceptBtn.addEventListener("click", ()=>{
-    AcceptPrivateChatInvite(roomKey);
+    RespondToPrivateChatInvite(roomKey, noteId, true);
     NotificationBody?.removeChild(MessageDiv); 
   })
 
@@ -101,7 +109,8 @@ const CreateChatInviteNotification = (inviter, roomKey, time, noteId, seen) => {
   IgnoreBtn.classList.add("btn-secondary");
   IgnoreBtn.innerHTML = "Ignore";
   IgnoreBtn.addEventListener("click", ()=>{
-    ResetNotificationCount()
+    //ResetNotificationCount()
+    RespondToPrivateChatInvite(roomKey, noteId, false);
     NotificationBody?.removeChild(MessageDiv)
   })
   ButtonDiv.appendChild(AcceptBtn);
@@ -134,7 +143,6 @@ const RemoveNotification = (child, parent) =>{
 }
 
 socket.on(`invited-to-chat`, (invite) => {
-  IncrementNotification();  
   const {
       inviter_name, 
       //socket.id of inviter
@@ -146,5 +154,6 @@ socket.on(`invited-to-chat`, (invite) => {
       noteId, 
       seen, 
   } = invite;   
+  console.log("Invited to chat: ", invite)
   CreateChatInviteNotification(inviter_name, roomKey, time, noteId, false);
 });

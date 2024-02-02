@@ -1,3 +1,7 @@
+1/2/24 
+The receiving client is not saving notifications. 
+I think it's because the way I set up the process of saving notification is flawed. 
+
 1/31/24
 Error: When someone joins private chatroom, main chatroom also gets the message
 
@@ -9,7 +13,7 @@ I am considering add notifications back to private chat
 1/30/24
 
 //This code is problematic because it shares the same broadcast name as the public one
-//save session info in client side in private chats  
+//save session info in client side in private chats   
 socket.emit("user info received", sessionInfo)
 
 The existing chat room list in private messages still need work.

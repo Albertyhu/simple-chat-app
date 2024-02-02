@@ -51,7 +51,6 @@ const RenderMessage = (chatItem)=>{
     user_name.innerText = chatItem.username;
     user_name.classList.add("usernameStyle");
     divElement.append(user_name);
-    console.log("chatItem: ", chatItem)
     var time = document.createElement("p"); 
     time.innerText = new Date(chatItem.date); 
     time.style.fontStyle = "italic";
@@ -59,7 +58,7 @@ const RenderMessage = (chatItem)=>{
     item.append(divElement);
     ChatHistory.recordMessage(chatItem.msg, chatItem.username, chatItem.authorSocketId, chatItem.date)
   }
-  var message = document.createElement("p");
+  var message = document.createElement("p"); 
   message.innerText = chatItem.msg;
 
   item.append(message);
@@ -100,7 +99,7 @@ const AuthenticateUsername = async (userN, roomKey) =>{
 
     //render unread notifications 
     notifications.forEach(note =>{
-      CreateChatInviteNotification(note.inviter, note.roomKey, note.time, note.noteId, note.seen)
+      CreateChatInviteNotification(note.inviter_name, note.roomKey, note.time, note.noteId, note.seen)
     })
   })
   .catch(error => {console.log("error: ", error)})

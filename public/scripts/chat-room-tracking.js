@@ -61,7 +61,6 @@ class ChatRoomClass {
                 }
                 return item; 
             }); 
-            console.log("arr: ", arr)
             if(found){      
                 this.chatRooms = arr; 
             }

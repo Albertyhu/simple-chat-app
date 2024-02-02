@@ -23,17 +23,14 @@ const AddUser = (req, res, next) =>{
     const newId = uuidv4(); 
     //create a new session if one doesn't exist; 
     if(!session || session === null || session === undefined){
-
         session = {
             id: newId, 
             username,  
             connected: true, 
-            //InviteNotification: new Map(), 
-            InviteNotification: SampleNotifications, 
+            InviteNotification: new Map(), 
         }
         ExistingSession.saveSession(newId, session)   
     } else {
-        console.log("old user")
         notifications = ExistingSession.getNotificationsByUserId(session.id)
     }
     try{
@@ -71,18 +68,20 @@ const AddUserInPrivateChat = (req, res) =>{
             connected: true, 
             InviteNotification: new Map(), 
         }
-        ExistingSession.saveSession(sessionId, session)
+        ExistingSession.saveSession(sessionId, session)  
     }
     else{
         sessionId = session.id
         notifications = ExistingSession.getNotificationsByUserId(session.id)
     }
+
     var chatHistory = []; 
     try{
         chatHistory = messageStore.getChatHistoryById(roomKey)
     } catch(e){
         return res.status(500).json({error: e})
     }
+
     return res.status(200).json({sessionInfo: session, messages: chatHistory, notifications})
 }
 

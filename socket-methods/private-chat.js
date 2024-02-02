@@ -7,7 +7,8 @@ const {
   ChooseWhosClientListToUpdate,  
 } = require("./shared-methods.js"); 
 
-const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
+//When the server receives an invite request created by a user
+const ReceiveInviteRequest = ({io, socket, ExistingSession, messageStore})=>{
   //socket instence for when a someone once to send an invite 
   socket.on("chat-invite", (invite) => {
     const {
@@ -34,15 +35,25 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
       messageStore.createStorage(roomKey, [])
     }
     socket.join(`room-${room_key}`)
-    var inviteeSocket = ExistingSession.getUserSocketId(invitee);     
-    invitee.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
-    socket.to(inviteeSocket).emit(`invited-to-chat`, invite);
+    let inviteeSocket = ExistingSession.getUserSocketId(invitee);     
+    let inviteRequest = invite
+    inviteRequest.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
+    socket.to(inviteeSocket).emit(`invited-to-chat`, inviteRequest);
   });
 }
 
-const ReceiveAcceptanceToInvite = ({socket})=>{
-  socket.on("accept-private-chat-invite", (roomKey)=>{
-    socket.join(`room-${roomKey}`)
+const ReceiveResponseToInvite = ({socket, ExistingSession})=>{
+  socket.on("respond-to-private-chat-invite", (result)=>{
+    const {
+      roomKey, 
+      userId, 
+      noteId, 
+      accepted
+    } = result;
+    ExistingSession.removeNotification(userId, noteId)
+    if(accepted){
+      socket.join(`room-${roomKey}`)
+    }
   })  
 }
 
@@ -128,8 +139,8 @@ const ReceiveStopTypingInPrivateChat = ({io, socket}) =>{
 }
 
 module.exports = {
-    ReceiveInvite, 
-    ReceiveAcceptanceToInvite, 
+    ReceiveInviteRequest, 
+    ReceiveResponseToInvite, 
     ReceiveJoinedPrivateChat,
     ReceivePrivateChat, 
     ReceiveTypingInPrivateChat, 

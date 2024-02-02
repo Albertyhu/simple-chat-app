@@ -18,7 +18,6 @@ const UpdateEveryonesClientOnlineList  = ({io, ExistingSession}) =>{
 
 const UpdateCurrentUserClientOnlineList = ({socket, ExistingSession, messageStore}) =>{
     let updatedList = messageStore.getAllOnlineUsers(ExistingSession)
-   console.log("UpdateCurrentUserClientOnlineList updatedList: ", updatedList)
     socket.emit("update user list", updatedList)
 }
 

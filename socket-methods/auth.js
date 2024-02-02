@@ -3,7 +3,7 @@ const UserLogOff = ({io, socket, ExistingSession}) =>{
   //client will pass the userId of the user to be removed from the list
   socket.on("log off", (userId)=>{
     ExistingSession.updateOnlineStatus(userId, false)
-    io.emit("update user list", ExistingSession.returnAllSessionsAsArray())
+    io.emit("update user list", ExistingSession.returnAllSessionsAsArray()) 
   })
 }
 

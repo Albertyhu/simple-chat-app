@@ -52,12 +52,14 @@ const PublicSocketMethods = ({MAIN_ROOM, io, socket, ExistingSession, messageSto
             io.emit("chat message", message); 
         });
     }
+
     const PublicUserTyping = () =>{
         //when a user is typing
         socket.on("user is typing", (userId) => { 
             io.emit("user is typing", userId);
         });
     }
+    
     const PublicNoLongerTyping = () =>{
         socket.on("no longer typing", (userId) => {
             io.emit("no longer typing", userId);

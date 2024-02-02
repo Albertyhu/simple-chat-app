@@ -25,10 +25,8 @@ socket.on ("addUserToChatRoom", (event)=>{
     username, 
     room_key, 
   } = event; 
-  console.log("addUserToChatRoom event: ", event)
   //update record of chatrooms that user is in 
   CurrentUserChatRooms.addSingleUserToChatRoom(room_key, username)
   //re-render elements of the UI 
-  console.log("CurrentUserChatRooms: ", CurrentUserChatRooms.getAllChatRooms())
   RenderExistingChatList(CurrentUserChatRooms.getAllChatRooms())
 })

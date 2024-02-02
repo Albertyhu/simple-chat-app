@@ -115,14 +115,17 @@ class SessionStore{
   }
   removeUserByName(name){
     var id = this.findIDByName(name)
-    if(id){
-      this.session.delete(id)
-    }
+    if(id){ 
+      this.session.delete(id) 
+    } 
     else{
       throw new Error("There is no existing user that goes by that user name")
     }
   }
   saveSession(id, session) {
+    if(!session.InviteNotification){
+      session.InviteNotification = new Map()
+    }
     this.sessions.set(id, session);
   }
   updateOnlineStatus(id, status){
@@ -186,6 +189,7 @@ class SessionStore{
       return arr; 
     } catch(e){console.log(`convertIdSetToArrayOfUsers ${e}`)}
   }
+
   AddInviteNotification({roomKey, time, inviter_name, inviter, invitee}){
     try{
       //get session of invitee
@@ -198,8 +202,12 @@ class SessionStore{
         inviter,
         seen: false, 
       } 
-
-      inviteeSession.InviteNotification.set(NoteId, newNote)
+      if(inviteeSession.InviteNotification){
+        inviteeSession.InviteNotification.set(NoteId, newNote)
+      }
+      else{
+        
+      }
       this.sessions.set(invitee, inviteeSession); 
       return NoteId; 
     } catch(e){
@@ -216,14 +224,15 @@ class SessionStore{
       this.sessions.set(userId, session)
     } catch(e){console.log(`updateNotificationView ${e}`)}
   } 
+
   //removes a notification
   removeNotification(userId, NoteId){
     try{
       let removedNotification = this.sessions.get(userId).InviteNotification.get(NoteId)
       this.sessions.get(userId).InviteNotification.delete(NoteId); 
-      console.log("removeNotification: ",  removedNotification )
     } catch(e){console.log(`removeNotification ${e}`)}   
   }
+
   //returns Invite Notifications as an array
   //the notifications have to be in descending order 
   getNotificationsByUserId(userId){

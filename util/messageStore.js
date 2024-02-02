@@ -194,7 +194,7 @@ class MessageStorage {
                 //update info
                 this.storage.set(roomKey, storageInstance)
             }
-        } catch(e){console.log(`addUserToRoom error: ${e}`)}
+        } catch(e){console.log(`addUserToRoom ${e}`)}
     }
     updateUserStatus(roomKey, id, status){
          let updatedArr = this.storage.get(roomKey).members.map(user =>{
@@ -277,13 +277,14 @@ class MessageStorage {
                 foundMemberKey, 
             };
         }catch(e){
-            console.log(`findStoreInstanceBySocket error: ${e}`)
+            console.log(`findStoreInstanceBySocket ${e}`)
         }
     }
     disconnectMessage(io, socket, ExistingSession){
         let socketId = socket.id; 
         try{
-            const {foundKey, foundMemberKey} = this.getKeyAndMemberInstanceBySocket(socketId)
+            const keys = this.getKeyAndMemberInstanceBySocket(socketId)
+            const {foundKey, foundMemberKey} = keys; 
             if(foundKey){
                 let storageInstance = this.storage.get(foundKey); 
                 let updatedMembers = storageInstance.members;
@@ -319,9 +320,6 @@ class MessageStorage {
                         ExistingSession.updateOnlineStatus(userId, false)  
                     }
                 }
-            }
-            else{
-                throw new Error(`socket.id ${socket.id} doesn't exist. \n`) 
             }
         } catch(e){console.log(`disconnectMessage ${e}`)}
     }

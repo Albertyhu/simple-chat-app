@@ -5,8 +5,8 @@ const {
   DisconnectEvent, 
 } = require("../socket-methods/auth.js"); 
 const {
-  ReceiveInvite, 
-  ReceiveAcceptanceToInvite, 
+  ReceiveInviteRequest, 
+  ReceiveResponseToInvite, 
   ReceiveJoinedPrivateChat, 
   ReceivePrivateChat,
   ReceiveTypingInPrivateChat, 
@@ -59,10 +59,13 @@ const {
   DisconnectEvent({io, socket, ExistingSession, messageStore})
 
   //when a user sends an invite for a private chat to another
-  ReceiveInvite({io, socket, ExistingSession, messageStore}); 
+  ReceiveInviteRequest({io, socket, ExistingSession, messageStore}); 
 
-  //when a user accepts an invite
-  ReceiveAcceptanceToInvite({socket})
+  // //when a user accepts an invite
+  // ReceiveAcceptanceToInvite({socket, ExistingSession})
+
+  //when a user responds to an invite
+  ReceiveResponseToInvite ({socket, ExistingSession}); 
   
   //when people join a private chat
   ReceiveJoinedPrivateChat({io, socket, ExistingSession, messageStore})
