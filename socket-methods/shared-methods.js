@@ -44,9 +44,27 @@ const RemoveNotification = ({io, ExistingSession}) =>{
 
 }
 
+const UpdateNoteStatus = ({io, ExistingSession}) =>{
+    io.on("Update notification status", (event)=>{
+        const {
+            userId,
+            //noteId: Array<string>
+            noteId, 
+            seen, 
+        } = event; 
+        console.log("updateNotificationView event ", event)
+        //only use this if you want to update note status in mass 
+        // noteIds.forEach(id => {
+        //     ExistingSession.updateNotificationView(userId, id, seen); 
+        // })
+        ExistingSession.updateNotificationView(userId, noteId, seen);
+    })
+}
+
 module.exports = {
     UpdateUserChatRoomList, 
     UpdateEveryonesClientOnlineList ,
     UpdateCurrentUserClientOnlineList, 
-    ChooseWhosClientListToUpdate, 
+    ChooseWhosClientListToUpdate,
+    UpdateNoteStatus,  
  }

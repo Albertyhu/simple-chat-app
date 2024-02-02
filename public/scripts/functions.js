@@ -1,6 +1,3 @@
-
-
-
 const RemoveUserElem = () => {
   LogoutLink.style.display = "none";
   MenuHeader.innerHTML = "";
@@ -66,9 +63,8 @@ const AuthenticateUsername = async (userN) =>{
     })
 
     //render unread notifications 
-    console.log("auth notifications: ", notifications)
     notifications?.forEach(note =>{
-      CreateChatInviteNotification(note.inviter, note.roomKey, note.time)
+      CreateChatInviteNotification(note.inviter, note.roomKey, note.time, note.noteId, note.seen)
     })
   })
   .catch(error => {console.log("error: ", error)})

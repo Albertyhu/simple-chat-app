@@ -1,14 +1,52 @@
 //elements for rendering the notification panel 
-var NotificationTab = document.getElementById("notification-header");
-var NotificationBody = document.getElementById("notification-body");
-var NotificationCount = document.getElementById("notification-count")
+const NotificationTab = document.getElementById("notification-header");
+const NotificationBody = document.getElementById("notification-body");
+const NotificationCount = document.getElementById("notification-count")
 
+const options = {
+  threshold: 0.1, 
+}
+
+const NoteObserver = new IntersectionObserver(entries=>{
+  entries.forEach((entry)=>{
+    if(entry.isIntersecting){
+      let noteId = entry.target.id.replace("noteId-", ""); 
+      socket.emit("Update notification status", {
+        userId: Session.userId, 
+        noteId, 
+        seen: true
+      })
+      DecrementNotification(); 
+      //setTimeout(()=>{
+        entry.target.classList.remove("unread-notification")
+      //}, 500)
+      NoteObserver.unobserve(entry.target)
+    }
+  })
+}, options)
+
+//needs work 
 const IncrementNotification = () => {
-  var newNotification = localStorage.getItem("new_notification")
-  newNotification++; 
-  localStorage.setItem("new_notification", newNotification)
-  NotificationCount.innerHTML = `&nbsp; (${newNotification})`
+  //var newNotification = localStorage.getItem("new_notification")
+  Session.incrementNotificationCount();  
+  //localStorage.setItem("new_notification", newNotification)
+  NotificationCount.innerHTML = `&nbsp; (${Session.inviteNotificationCount})`
   NotificationCount.style.fontWeight = "bold"; 
+}
+
+const DecrementNotification = () => {
+  //var newNotification = localStorage.getItem("new_notification")
+  //newNotification++; 
+  Session.decrementNotificationCount();  
+  //localStorage.setItem("new_notification", newNotification)
+  NotificationCount.innerHTML = `&nbsp; (${Session.inviteNotificationCount})`
+  NotificationCount.style.fontWeight = "bold"; 
+}
+
+//needs 
+const SetNotificationNumber = (num) =>{
+  NotificationCount.innerHTML = `&nbsp; (${num})`; 
+  NotificationCount.style.fontWeight = "bold";  
 }
 
 const ResetNotificationCount = () =>{
@@ -36,10 +74,14 @@ const AcceptPrivateChatInvite = (roomKey) =>{
 }
 
 //Creates notification for the invitee notifying him that someone wants to chat with him 
-const CreateChatInviteNotification = (inviter, roomKey, time) => {
-  console.log("fired")
+const CreateChatInviteNotification = (inviter, roomKey, time, noteId, seen) => {
+  IncrementNotification();  
   var MessageDiv = document.createElement("div");
-  MessageDiv.classList.add("notification-message");
+  MessageDiv.classList.add("notification-message"); 
+  MessageDiv.setAttribute("id", `noteId-${noteId}`)
+  if(!seen){
+    MessageDiv.classList.add("unread-notification"); 
+  }
 
   var Paragraph = document.createElement("p");
   Paragraph.innerHTML = `${inviter} wants to chat`;
@@ -74,6 +116,8 @@ const CreateChatInviteNotification = (inviter, roomKey, time) => {
   MessageDiv.appendChild(ButtonDiv);
 
   NotificationBody?.appendChild(MessageDiv);
+
+  NoteObserver.observe(MessageDiv); 
 };
 
 const RemoveNotification = (child, parent) =>{
@@ -90,6 +134,8 @@ socket.on(`invited-to-chat`, (invite) => {
       invitee,
       roomKey, 
       time, 
+      noteId, 
+      seen, 
   } = invite;   
-  CreateChatInviteNotification(inviter_name, roomKey, time);
+  CreateChatInviteNotification(inviter_name, roomKey, time, noteId, false);
 });

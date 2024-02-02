@@ -1,6 +1,5 @@
 const { 
-  convertToUniqueArray,
-  convertMapToArray, 
+  convertNotificationMapToArray,
   SortNotificationsByOrder, 
   } = require("../hooks/array.js")
 
@@ -28,7 +27,6 @@ const { v4:uuidv4 } = require("uuid");
 /**
  * type InviteNotificationObj = {
  *  NoteId: string, 
- * 
  *  roomKey: string, , 
  *  time: Date,
 *   inviter_name: string, 
@@ -194,7 +192,11 @@ class SessionStore{
 
       inviteeSession.InviteNotification.set(NoteId, newNote)
       this.sessions.set(invitee, inviteeSession); 
-    } catch(e){console.log(`AddInviteNotification ${e}`)}
+      return NoteId; 
+    } catch(e){
+      console.log(`AddInviteNotification ${e}`)
+      return null; 
+    }
   }
   updateNotificationView(userId, NoteId, status){
     try{
@@ -219,8 +221,21 @@ class SessionStore{
     try{ 
       //Retrieve notifications from sessions by user Id
       //SortNotificationsByOrder will sort the array by descending date
-      let notifications = SortNotificationsByOrder(convertMapToArray(this.sessions.get(userId).InviteNotification), false);
-      console.log("getNotificationsByUserId notifications: ", notifications); 
+      let notifications = SortNotificationsByOrder(convertNotificationMapToArray(this.sessions.get(userId).InviteNotification), false) || [];
+      notifications.forEach(item =>{
+        let generatedDate = new Date(item.time)
+        console.log("getNotificationsByUserId notifications dates: ", generatedDate.toLocaleDateString()); 
+      })
+      /**
+       * type notificationsObj = {
+       *  id: string, 
+       *  roomKey: string,
+          time: Date,
+          inviter_name: string, 
+          inviter: string,
+          seen: boolean, 
+       * }
+       */
       return notifications; 
     } catch(e){console.log(`getAllNotifications ${e}`)}
   }

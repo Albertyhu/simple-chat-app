@@ -14,7 +14,7 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
         inviter_name, 
         //session id of inviter
         inviter,
-        //session id of invitee 
+        //socket id of invitee 
         invitee,
         roomKey,
     } = invite; 
@@ -35,9 +35,8 @@ const ReceiveInvite = ({io, socket, ExistingSession, messageStore})=>{
     }
     socket.join(`room-${room_key}`)
     var inviteeSocket = ExistingSession.getUserSocketId(invitee);     
-    //The variable 'invitee' is the socket id that is unique to the user.
+    invitee.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
     socket.to(inviteeSocket).emit(`invited-to-chat`, invite);
-    ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
   });
 }
 

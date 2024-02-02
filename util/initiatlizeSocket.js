@@ -16,7 +16,11 @@ const {
   SessionMiddleware, 
   wrap, 
  } = require("../middlewares/sessionMiddleware.js")
-const PublicSocketMethods = require("../socket-methods/public-chat.js")
+const PublicSocketMethods = require("../socket-methods/public-chat.js"); 
+const {
+  UpdateNoteStatus, 
+} = require("../socket-methods/shared-methods.js"); 
+
 const { 
   MAIN_ROOM
 } = require("../config/constants.js")
@@ -71,6 +75,8 @@ const {
   
   //listen to when user is no longer typing in private chat. 
   ReceiveStopTypingInPrivateChat({io, socket})
+
+  UpdateNoteStatus({io, ExistingSession})
 });
 }
 

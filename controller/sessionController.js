@@ -9,6 +9,9 @@ const {
 const {
   genKey, 
 } = require("../hooks/string.js"); 
+const {
+  createRandomDate, 
+} = require("../hooks/number.js"); 
 
 //Adds user to public chat
 //This is sends the necessary information to the client to render the page
@@ -38,7 +41,7 @@ const AddUser = (req, res, next) =>{
     } catch(e){
         return res.status(500).json({error: e})
     }
-    return res.status(200).json({session, messages: chatHistory, notifications: ExistingSession.getNotificationsByUserId(newId)})
+    return res.status(200).json({session, messages: chatHistory, notifications})
 }
 
 const LogSession = (req, res) =>{
@@ -107,32 +110,90 @@ var SampleNotifications = new Map()
 
 SampleNotifications.set(genKey(10), {
   roomKey: genKey(10), 
-  time: new Date (),   
+  time: createRandomDate(),   
   inviter_name: "Sample name", 
   inviter: genKey(10), 
   seen: false, 
+  id: genKey(10), 
 })
 
 SampleNotifications.set(genKey(10), {
   roomKey: genKey(10), 
-  time: new Date (),   
+  time: createRandomDate(),   
   inviter_name: "Sample name", 
   inviter: genKey(10), 
   seen: false, 
+  id: genKey(10), 
 })
 
 SampleNotifications.set(genKey(10), {
   roomKey: genKey(10), 
-  time: new Date (),   
+  time: createRandomDate(),   
   inviter_name: "Sample name", 
   inviter: genKey(10), 
-  seen: false, 
+  seen: false,   
+  id: genKey(10), 
 })
 
 SampleNotifications.set(genKey(10), {
   roomKey: genKey(10), 
-  time: new Date (),   
+  time: createRandomDate(),   
   inviter_name: "Sample name", 
   inviter: genKey(10), 
-  seen: false, 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
+})
+
+SampleNotifications.set(genKey(10), {
+  roomKey: genKey(10), 
+  time: createRandomDate(),   
+  inviter_name: "Sample name", 
+  inviter: genKey(10), 
+  seen: false,   
+  id: genKey(10), 
 })

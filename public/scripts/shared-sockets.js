@@ -16,7 +16,6 @@ socket.on("addAllUserChatRooms", (ExistingChatRooms)=>{
     ExistingChatRooms.forEach(item =>{
         CurrentUserChatRooms.addChatRoom(item.room_key, item.users)
     })
-  console.log("CurrentUserChatRooms: ", CurrentUserChatRooms.chatRooms)
   RenderExistingChatList(ExistingChatRooms)
 })
 

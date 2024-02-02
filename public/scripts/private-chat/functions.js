@@ -100,7 +100,7 @@ const AuthenticateUsername = async (userN, roomKey) =>{
 
     //render unread notifications 
     notifications.forEach(note =>{
-      CreateChatInviteNotification(note.inviter, note.roomKey, note.time)
+      CreateChatInviteNotification(note.inviter, note.roomKey, note.time, note.noteId, note.seen)
     })
   })
   .catch(error => {console.log("error: ", error)})
