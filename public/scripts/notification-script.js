@@ -115,7 +115,16 @@ const CreateChatInviteNotification = (inviter, roomKey, time, noteId, seen) => {
   MessageDiv.appendChild(Paragraph);
   MessageDiv.appendChild(ButtonDiv);
 
-  NotificationBody?.appendChild(MessageDiv);
+  //makes sure that newest notifications are inserted before the oldest ones 
+  //so that the notifications are in descending order
+  if(NotificationBody.firstChild){
+    NotificationBody?.insertBefore(MessageDiv, NotificationBody.firstChild);
+  }
+  else{
+    NotificationBody?.appendChild(MessageDiv);
+  }
+
+
 
   NoteObserver.observe(MessageDiv); 
 };

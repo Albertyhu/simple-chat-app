@@ -19,7 +19,7 @@ const { v4:uuidv4 } = require("uuid");
  *  connected: boolean, 
  * //notificatin needs to be built
  *  InviteNotification: Map<NoteId, obj>
- * 
+ *  
  * }
  * 
  */
@@ -37,6 +37,15 @@ const { v4:uuidv4 } = require("uuid");
  * }
  * 
  */
+
+  /**
+   * type PrivateChatObj = {
+   * chatId: string, 
+   * commenter: string, 
+   * roomKey: string, 
+   * }
+   * 
+   */
  
 //This.sessions uses the user's id as the key 
 class SessionStore{
@@ -220,12 +229,9 @@ class SessionStore{
   getNotificationsByUserId(userId){
     try{ 
       //Retrieve notifications from sessions by user Id
-      //SortNotificationsByOrder will sort the array by descending date
-      let notifications = SortNotificationsByOrder(convertNotificationMapToArray(this.sessions.get(userId).InviteNotification), false) || [];
-      notifications.forEach(item =>{
-        let generatedDate = new Date(item.time)
-        console.log("getNotificationsByUserId notifications dates: ", generatedDate.toLocaleDateString()); 
-      })
+      //SortNotificationsByOrder will sort the array by date in ascending order
+      //the client will be responsible for inserting the oldest notification in the list first 
+      let notifications = SortNotificationsByOrder(convertNotificationMapToArray(this.sessions.get(userId).InviteNotification), true) || [];
       /**
        * type notificationsObj = {
        *  id: string, 
