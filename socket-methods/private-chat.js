@@ -35,13 +35,13 @@ const ReceiveInviteRequest = ({io, socket, ExistingSession, messageStore})=>{
       messageStore.createStorage(roomKey, [])
     }
     socket.join(`room-${room_key}`)
-    //let inviteeSocket = ExistingSession.getUserSocketId(invitee); 
+    
+    //Get all sockets of the invitee 
     let inviteeSockets = messageStore.getAllSocketsOfUser(invitee);     
-    let inviteRequest = invite
-    inviteRequest.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
 
-    //this is flawed 
-    //socket.to(inviteeSocket).emit(`invited-to-chat`, inviteRequest);
+    let inviteRequest = invite; 
+    //Record the invite request in the invitee's notification box and get the noteId of the invitation
+    inviteRequest.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
 
     //broadcast invite request to all sockets owned by the invitee 
     inviteeSockets.forEach(socketId =>{
