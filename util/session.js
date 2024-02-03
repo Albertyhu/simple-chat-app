@@ -55,6 +55,7 @@ class SessionStore{
   findSession(id) {
     return this.sessions.get(id);
   }
+  //this is flawed because a user can have multiple sockets 
   updateUserSocketId(id, newSocketID){
     var session = this.sessions.get(id);
     session.socketId = newSocketID; 
@@ -73,6 +74,7 @@ class SessionStore{
     })
     return user; 
   }
+  //flawed
   findSessionBySocketId(socketId){
     let session = null
     this.sessions.forEach(item =>{

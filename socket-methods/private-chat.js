@@ -13,9 +13,9 @@ const ReceiveInviteRequest = ({io, socket, ExistingSession, messageStore})=>{
   socket.on("chat-invite", (invite) => {
     const {
         inviter_name, 
-        //session id of inviter
+        //user id of inviter
         inviter,
-        //socket id of invitee 
+        //user id of invitee 
         invitee,
         roomKey,
     } = invite; 
@@ -35,10 +35,18 @@ const ReceiveInviteRequest = ({io, socket, ExistingSession, messageStore})=>{
       messageStore.createStorage(roomKey, [])
     }
     socket.join(`room-${room_key}`)
-    let inviteeSocket = ExistingSession.getUserSocketId(invitee);     
+    //let inviteeSocket = ExistingSession.getUserSocketId(invitee); 
+    let inviteeSockets = messageStore.getAllSocketsOfUser(invitee);     
     let inviteRequest = invite
     inviteRequest.noteId = ExistingSession.AddInviteNotification({roomKey, time: invite.time, inviter_name, inviter, invitee})
-    socket.to(inviteeSocket).emit(`invited-to-chat`, inviteRequest);
+
+    //this is flawed 
+    //socket.to(inviteeSocket).emit(`invited-to-chat`, inviteRequest);
+
+    //broadcast invite request to all sockets owned by the invitee 
+    inviteeSockets.forEach(socketId =>{
+      socket.to(socketId).emit(`invited-to-chat`, inviteRequest);
+    })
   });
 }
 

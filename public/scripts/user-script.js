@@ -1,3 +1,4 @@
+//Create the div that says you are logged in as [username]
 const AddUserElem = (userN) => {
   MenuHeader.style.display = "block";
   MenuHeader.innerHTML = `<p>You are logged in as</p><p><b>${userN}</b></p>`;
@@ -29,7 +30,6 @@ const AddUserToList = (userN, ID) => {
   userLi.setAttribute("id", `id-${ID}`);
   userLi.innerText = userN;
   UserList.append(userLi);
-
   if (username != userN) {
     userLi.style.cursor = "pointer";
     openInviteBox(userN, ID, userLi);
@@ -43,14 +43,14 @@ const RemoveUserFromList = (ID) => {
 
 //opens box to invite a user
 //ID argument belongs to the invitee
-const openInviteBox = (invitee, ID, parentElem) => {
+const openInviteBox = (inviteeUsername, ID, parentElem) => {
   const InviteBox = document.createElement("div");
   InviteBox.classList.add("inviteBox");
   InviteBox.classList.add("hideInviteBox");
   InviteBox.setAttribute("id", `invite-${ID}`);
 
   const paragraph = document.createElement("p");
-  paragraph.innerText = `Invite ${invitee} to a private chat?`;
+  paragraph.innerText = `Invite ${inviteeUsername} to a private chat?`;
 
   const BtnDiv = document.createElement("div");
   BtnDiv.classList.add("btnDiv");

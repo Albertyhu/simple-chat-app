@@ -30,6 +30,9 @@ const { CompareArrays } = require("../hooks/array.js")
  * in_chat_room: boolean, 
  * }
  * 
+ * note: There is a reason that a single member of one chat room may have more than one socketId's. 
+ * It's because the user may have multiple windows of the same chat room. 
+ * However, the user has one uninque socket id for each window of the same chatroom. 
  */
 
 //in_chat_room is obsolet. Use socketIds to determine if user is still in chat room. 
@@ -238,6 +241,28 @@ class MessageStorage {
             }
         } catch(e){
             console.log(`removeUserSocket: ${e}`)
+        }
+    }
+
+    //get array of sockets from one user 
+    getAllSocketsOfUser(userId){
+        try{
+            let socketArray = []
+            //first find roomKeys of all chatrooms that the user is in
+            this.storage.forEach(chat =>{
+                //find out if the member is in the chat room 
+                 let foundMember = chat.members.find(val => val.id === userId)
+                 if(foundMember){
+                    //add socket to array
+                    let tempArr = Array.from(foundMember.socketIds)
+                    socketArray = socketArray.concat(tempArr)
+                 }
+            })
+            //make sure the array has only unique values 
+            return socketArray; 
+        } catch(e){
+            console.log(`getAllSocketsOfUser ${e}`) 
+            return []; 
         }
     }
 
