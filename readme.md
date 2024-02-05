@@ -20,8 +20,7 @@ The app is not backed by a databse yet.
 
 As long as the server runs and doesn't restart, all the client's information is saved. 
 
-## How the app works 
-### Sending a message to a single user 
+### The challenge of creating multiple chat rooms  
 
 Sending a message to a single user involves the following code 
 
