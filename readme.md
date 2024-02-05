@@ -1,6 +1,6 @@
 Live site: https://chat-app-brax.onrender.com/
-
-#Chat App
+ 
+# Chat App
 
 This is a chat app created with Node JS, Socket.io library, and EJS. 
 
@@ -20,8 +20,9 @@ The app is not backed by a databse yet.
 
 As long as the server runs and doesn't restart, all the client's information is saved. 
 
-##How the app works 
-###Sending a message to a single user 
+## How the app works 
+### Sending a message to a single user 
+
 Sending a message to a single user involves the following code 
 
 socket.to(<user's socket>).emit("name", callback)
