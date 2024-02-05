@@ -1,3 +1,17 @@
+2/22/24 
+Hosting on Netlify 
+intall netlify-lambda
+install serverless-http
+
+put functions in gitignore 
+
+create file netlify.toml is src file 
+
+create directory "dist" 
+create a blank index.html file inside "/dis" 
+
+source: https://www.youtube.com/watch?v=hQAu0YEIF0g&t=261s
+source: https://www.youtube.com/watch?v=8x0Dty5D6CA
 1/2/24 
 The receiving client is not saving notifications. 
 I think it's because the way I set up the process of saving notification is flawed. 
