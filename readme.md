@@ -14,11 +14,11 @@ The user is allowed to create a prviate chat room and invite another online user
 
 Once the user logs into the web app, the client first fetches account information if it exists from the server through CRUD operations. 
 
-From then on, information is passed through sockets betweene the client and the server. 
+From then on, information is passed through sockets between the client and the server. 
 
 The app is not backed by a databse yet. 
 
-As long as the server runs and doesn't restart, all the client's information is saved. 
+As long as the server runs and doesn't restart, all the client's information and chat history are saved. 
 
 ### The challenge of creating multiple chat rooms  
 
