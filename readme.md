@@ -24,13 +24,17 @@ As long as the server runs and doesn't restart, all the client's information is 
 
 Sending a message to a single user involves the following code 
 
+```
 socket.to(<user's socket>).emit("name", callback)
+```
 
 However, because different chatrooms are opened in separate pages, a user who is a member of all those chatrooms will have different sockets for each one, each with its unique socket id. 
 
 Thus, when sending a message to one user, and you want to make sure the user receives the notification in whatever chat room he is in, it's necessary to retrieve all the user's socket id's and put them in an array. 
 
+```
 const socketArray = [<array of sockets>]
 socketArray.forEach(socket => {
     socket.to(socket).emit("name", callback)
 })
+```
