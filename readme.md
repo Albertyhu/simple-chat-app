@@ -1,5 +1,7 @@
 Live site: https://chat-app-brax.onrender.com/
  
+Note: Becase the app is hosted on a free tier on Render, there is usually a long cold start before the app is fully loaded. 
+
 # Chat App
 
 This is a chat app created with Node JS, Socket.io library, and EJS. 
