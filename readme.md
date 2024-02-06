@@ -1,6 +1,6 @@
 Live site: https://chat-app-brax.onrender.com/
  
-Note: Becase the app is hosted on a free tier on Render, there is usually a long cold start before the app is fully loaded. 
+Note: Because the app is hosted on a free tier on Render, there is usually a long cold start before the app is fully loaded. 
 
 # Chat App
 
