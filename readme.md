@@ -10,7 +10,7 @@ It allows persistent user sessions. That means that a user can be in the same ch
 
 The difficulty in building this app is tracking down all the information that is generated and passed around. 
 
-The authentication doen't include password security yet because I haven't had time to implement it. 
+The authentication doesn't include password security yet because I haven't had time to implement it. 
 
 The user is allowed to create a prviate chat room and invite another online user to it. 
 
@@ -18,7 +18,7 @@ Once the user logs into the web app, the client first fetches account informatio
 
 From then on, information is passed through sockets between the client and the server. 
 
-The app is not backed by a databse yet. 
+The app is not backed by a database yet. 
 
 As long as the server runs and doesn't restart, all the client's information and chat history are saved. 
 
