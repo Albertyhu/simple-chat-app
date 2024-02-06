@@ -12,7 +12,7 @@ The difficulty in building this app is tracking down all the information that is
 
 The authentication doesn't include password security yet because I haven't had time to implement it. 
 
-The user is allowed to create a prviate chat room and invite another online user to it. 
+The user is allowed to create a private chat room and invite another online user to it. 
 
 Once the user logs into the web app, the client first fetches account information if it exists from the server through CRUD operations. 
 
