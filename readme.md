@@ -24,11 +24,13 @@ As long as the server runs and doesn't restart, all the client's information and
 
 ### The challenge of creating multiple chat rooms  
 
-Socket id's are used to identify a member of a chatroom. They are necessary to provide functionality to sending a message to a specific user or inviting them to a private chat room.
+Socket IDs are used to identify a member of a chatroom. They are necessary to provide functionality for sending a message to a specific user or inviting them to a private chat room.
 
-However, because different chatrooms are opened in separate pages, a user who is a member of all those chatrooms will have different sockets for each one, each with its unique socket id. 
 
-Thus, when sending a message to one user, and you want to make sure the user receives the notification in whatever chat room he is in, it's necessary to retrieve all the user's socket id's and put them in an array. 
+However, because different chatrooms are opened on separate pages, a user who is a member of all those chatrooms will have different sockets for each one, each with its own unique socket ID.
+
+
+Thus, when sending a message to one user and you want to make sure the user receives the notification in whatever chat room he is in, it's necessary to retrieve all the user's socket IDs and put them in an array.
 
 ```
 const socketArray = [<array of sockets>]
