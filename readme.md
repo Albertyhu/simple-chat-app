@@ -24,11 +24,7 @@ As long as the server runs and doesn't restart, all the client's information and
 
 ### The challenge of creating multiple chat rooms  
 
-Sending a message to a single user involves the following code 
-
-```
-socket.to(<user's socket>).emit("name", callback)
-```
+Socket id's are used to identify a member of a chatroom. They are necessary to provide functionality to sending a message to a specific user or inviting them to a private chat room.
 
 However, because different chatrooms are opened in separate pages, a user who is a member of all those chatrooms will have different sockets for each one, each with its unique socket id. 
 
